@@ -14,7 +14,8 @@ class Aparature:
         self.wielkosc = rm.open_resource(self.multimeter)
 
     def measurement(self):
-        pomiar = self.wielkosc.query("MEAS:RES?")
+        self.wielkosc.query("ROUTe:SCAN:RES?<20>")
+        pomiar = self.wielkosc.query("READ")
         return pomiar
 
 aparature = Aparature()

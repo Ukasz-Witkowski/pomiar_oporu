@@ -1,3 +1,4 @@
+
 import time
 import csv
 import matplotlib
@@ -6,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pyvisa
 
-
 class Aparature:
     multimeter = 'USB0::0x164E::0x0DAD::TW00042933::INSTR'
     def __init__(self):
@@ -14,11 +14,17 @@ class Aparature:
         self.wielkosc = rm.open_resource(self.multimeter)
 
     def measurement(self):
-        pomiar = self.wielkosc.query("MEAS:RES?")
+        pomiar = self.wielkosc.query("READ?")
         return pomiar
+
+    def clo(self,ch):
+        self.wielkosc.write(f'ROUT:CLOS {ch}')
+    
 
 aparature = Aparature()
 
+aparature.clo(13)
+time.sleep(1)
 plot_window = 20
 y_var = np.array(np.zeros([plot_window]))
 

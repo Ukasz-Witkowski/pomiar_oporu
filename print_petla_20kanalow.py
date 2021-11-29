@@ -1,3 +1,5 @@
+#program który wykonuje pomiar co 2 s na kolejnych kanałach i wypisuje wartośc w terminalu
+
 import time
 import pyvisa
 
@@ -12,7 +14,8 @@ class Aparature:
         self.wielkosc.write("CONF:RES")
 
     def set_v(self,a):
-        self.wielkosc.write(f'ROUT:SCAN:FUNC {a},"VOLT:DC"')
+        # self.wielkosc.write(f'ROUT:SCAN:FUNC {a},"VOLT:DC"')
+        self.wielkosc.write("CONF:VOLT:DC")
 
     def ope(self):
         self.wielkosc.write("ROUT:OPEN")
@@ -34,14 +37,25 @@ class Aparature:
 
 aparature = Aparature()
 
-aparature.clo(20)
+aparature.clo(19)
 
 time.sleep(0.5)
 
 aparature.set_r()
 
+time.sleep(1)
+
+aparature.set_v(1)
+
 time.sleep(0.5)
 
 while True:
-    print(aparature.measure())
-    time.sleep(0.5)
+    for i in range(20):
+        aparature.clo(i+1)
+        time.sleep(1)
+        print(str(i+1)+". "+str(aparature.measure())) 
+        time.sleep(1)
+    print("--------------")
+    time.sleep(3)
+
+    

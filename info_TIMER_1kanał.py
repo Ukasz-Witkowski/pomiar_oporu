@@ -1,7 +1,5 @@
 import time
 import pyvisa
-
-
 class Aparature:
     multimeter = 'USB0::0x164E::0x0DAD::TW00042933::INSTR'
     def __init__(self):
@@ -16,7 +14,6 @@ class Aparature:
         return pomiar
 
 aparature = Aparature()
-
 aparature.set()
 
 while True:

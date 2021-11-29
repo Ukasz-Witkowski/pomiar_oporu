@@ -1,6 +1,7 @@
+#program wykonuje pętlę po wszystkich kanałach zamykając po kolei każdy i wypisyjąc listę, które są zapisane a któe otwarte
+
 import time
 import pyvisa
-
 
 class Aparature:
     multimeter = 'USB0::0x164E::0x0DAD::TW00042933::INSTR'
@@ -21,8 +22,9 @@ class Aparature:
 aparature = Aparature()
 
 aparature.ope()
-for i in range(10):
-    aparature.clo(i)
+for i in range(20):
+    aparature.clo(i+1)
     time.sleep(0.5)
+    print(aparature.measurement())
 
-print(aparature.measurement())
+

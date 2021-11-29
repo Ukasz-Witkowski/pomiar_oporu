@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5.QtWidgets import QApplication, QWidget
 
-class Canvas(FigureCanvas):
+class wykres(FigureCanvas):
     def __init__(self, parent):
-        fig, self.ax = plt.subplots(figsize=(5, 4), dpi=200)
+        fig, self.ax = plt.subplots()
         super().__init__(fig)
         self.setParent(parent)
 
@@ -24,8 +24,7 @@ class AppDemo(QWidget)      :
     def __init__(self):
         super().__init__()
         self.resize(1600, 800)
-
-        chart = Canvas(self)
+        chart = wykres(self)
 
 app = QApplication(sys.argv)        
 demo = AppDemo()

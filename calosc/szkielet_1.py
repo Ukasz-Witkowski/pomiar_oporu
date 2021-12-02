@@ -1,6 +1,5 @@
-from __future__ import unicode_literals
+# from __future__ import unicode_literals
 import sys
-import os
 import random
 import matplotlib
 matplotlib.use('Qt5Agg')        # Make sure that we are using QT5

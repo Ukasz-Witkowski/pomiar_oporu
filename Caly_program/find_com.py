@@ -18,7 +18,8 @@ def find_device(name):
             
 
 if __name__ == '__main__':
-    connect_port = find_device('CH340')  # 'CH340'-Arduino clone name
+    connect_port = find_device('Arduino')  # 'CH340'-Arduino clone name
+    # connect_port = find_device('CH340')  # 'CH340'-Arduino clone name
     all_ports = get_ports()
     for port in all_ports:
         x = str(port)

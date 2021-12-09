@@ -33,25 +33,8 @@ class Wykres_statyczny(Figura_wykresu):
         s = sin(2*pi*t)
         self.axes.plot(t, s)
 
+
 class Wykres_dynamiczny_1(Figura_wykresu):
-
-    def __init__(self, *args, **kwargs):
-        Figura_wykresu.__init__(self, *args, **kwargs)
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.update_figure)
-        timer.start(1000)
-
-    def compute_initial_figure(self):
-        self.axes.plot([0, 1, 2, 3], [1, 2, 0, 4], 'r')
-
-    def update_figure(self):
-        l = [random.randint(0, 10) for i in range(4)]
-        self.axes.cla()
-        self.axes.plot([0, 1, 2, 3], l, 'r')
-        self.draw()
-
-class Wykres_dynamiczny_2(Figura_wykresu):
-
 
     def __init__(self, *args, **kwargs):
         Figura_wykresu.__init__(self, *args, **kwargs)
@@ -80,13 +63,10 @@ class Wykres_dynamiczny_2(Figura_wykresu):
         self.axes.plot(self.x_var, self.y_var, 'r')
         self.draw()
 
-class Wykres_dynamiczny_3(Figura_wykresu):
+class Wykres_dynamiczny_2(Figura_wykresu):
 
     def __init__(self, *args, **kwargs):
         Figura_wykresu.__init__(self, *args, **kwargs)
-        # timer = QtCore.QTimer(self)
-        # timer.timeout.connect(self.update_figure)
-        # timer.start(1000)
 
     def compute_initial_figure(self):
         self.y_var=[random.randint(0, 10) for i in range(10)]

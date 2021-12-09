@@ -6,7 +6,7 @@ from matplotlib.figure import Figure
 from PyQt5 import QtCore, QtGui, QtWidgets
 import wykres
 import grzalka
-import miernik20 
+import miernik
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -17,16 +17,8 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         
         self.przycisk_start = QtWidgets.QPushButton(self.centralwidget)
-        self.przycisk_start.setGeometry(QtCore.QRect(120, 570, 120, 40))
+        self.przycisk_start.setGeometry(QtCore.QRect(120, 570, 161, 51))
         self.przycisk_start.setObjectName("przycisk_start")
-
-        self.przycisk_grzalka = QtWidgets.QPushButton(self.centralwidget)
-        self.przycisk_grzalka.setGeometry(QtCore.QRect(120, 520, 120, 40))
-        self.przycisk_grzalka.setObjectName("przycisk_grzalka")
-
-        self.przycisk_dodatkowy = QtWidgets.QPushButton(self.centralwidget)
-        self.przycisk_dodatkowy.setGeometry(QtCore.QRect(120, 470, 120, 40))
-        self.przycisk_dodatkowy.setObjectName("przycisk_dodatkowy")
         
         self.verticalSlider = QtWidgets.QSlider(self.centralwidget)
         self.verticalSlider.setGeometry(QtCore.QRect(40, 340, 22, 281))
@@ -46,7 +38,7 @@ class Ui_MainWindow(object):
         self.widget_3.setGeometry(QtCore.QRect(410, 340, 300, 300))
         self.widget_3.setObjectName("widget_3")
 
-        self.dc0 = wykres.Wykres_dynamiczny_3(self.widget_1, width=6, height=6, dpi=50)
+        self.sc = wykres.Wykres_statyczny(self.widget_1, width=6, height=6, dpi=50)
         self.dc1 = wykres.Wykres_dynamiczny_1(self.widget_2, width=3, height=3, dpi=100)
         self.dc2 = wykres.Wykres_dynamiczny_2(self.widget_3, width=3, height=3, dpi=100)
 
@@ -99,9 +91,9 @@ class Ui_MainWindow(object):
         self.moc=0
 
         self.arduino=grzalka.Grzanie()
-        self.miernik=miernik20.Aparature()
-        self.miernik.ustaw_r
-        self.miernik.zamknij(13)
+        self.miernik=miernik.Aparature()
+        # self.miernik.ustaw_r
+        # self.miernik.zamknij(13)
 
         self.retranslateUi(MainWindow)
         self.verticalSlider.valueChanged['int'].connect(self.label_moc_wartosc.setNum)
@@ -109,15 +101,12 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.przycisk_start.setText(_translate("MainWindow", "Start"))
-        self.przycisk_grzalka.setText(_translate("MainWindow", "Ustaw moc"))
-        self.przycisk_dodatkowy.setText(_translate("MainWindow", "Dodatkowy"))
-        self.przycisk_start.clicked.connect(self.aktualizuj)
-        self.przycisk_grzalka.clicked.connect(self.zmiana2)
+        # self.przycisk_start.clicked.connect(self.dc2.update_figure(5.43))
+        self.przycisk_start.clicked.connect(self.zmiana2)
         self.label_moc_tytul.setText(_translate("MainWindow", "Moc grzałki"))
         self.label_moc_wartosc.setText(_translate("MainWindow", "0"))
         self.menupliki.setTitle(_translate("MainWindow", "pliki"))
@@ -129,9 +118,5 @@ class Ui_MainWindow(object):
 
     def zmiana2(self):
         self.arduino.zmien_moc(self.moc)
-
-    def aktualizuj(self):
-        y=self.miernik.mierz()
-        self.dc0.update_figure(y)
 
 

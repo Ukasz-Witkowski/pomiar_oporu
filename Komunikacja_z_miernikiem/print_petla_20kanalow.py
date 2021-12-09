@@ -39,9 +39,9 @@ aparature = Aparature()
 
 aparature.clo(19)
 
-time.sleep(0.5)
+# time.sleep(0.5)
 
-aparature.set_r()
+# aparature.set_r()
 
 time.sleep(1)
 
@@ -52,9 +52,9 @@ time.sleep(0.5)
 while True:
     for i in range(20):
         aparature.clo(i+1)
-        time.sleep(1)
+        time.sleep(0.5)
         print(str(i+1)+". "+str(aparature.measure())) 
-        time.sleep(1)
+        time.sleep(0.5)
     print("--------------")
     time.sleep(3)
 

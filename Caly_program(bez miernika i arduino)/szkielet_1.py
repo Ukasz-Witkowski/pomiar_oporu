@@ -1,8 +1,5 @@
-import sys
 import matplotlib
 matplotlib.use('Qt5Agg')        # używamy QT5
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
 from PyQt5 import QtCore, QtGui, QtWidgets
 import wykres
 import grzalka
@@ -46,9 +43,13 @@ class Ui_MainWindow(object):
         self.widget_3.setGeometry(QtCore.QRect(410, 340, 300, 300))
         self.widget_3.setObjectName("widget_3")
 
-        self.dc0 = wykres.Wykres_dynamiczny_3(self.widget_1, width=6, height=6, dpi=50)
-        self.dc1 = wykres.Wykres_dynamiczny_1(self.widget_2, width=3, height=3, dpi=100)
-        self.dc2 = wykres.Wykres_dynamiczny_2(self.widget_3, width=3, height=3, dpi=100)
+
+#-----------------------------------------
+        self.wykres_1 = wykres.Wykres_dynamiczny_2(self.widget_1, width=6, height=6, dpi=50)
+        self.wykres_2 = wykres.Wykres_dynamiczny_1(self.widget_2, width=6, height=6, dpi=50)
+        self.wykres_3= wykres.Wykres_dynamiczny_1(self.widget_3, width=6, height=6, dpi=50)
+#------------------------------------------
+
 
         self.label_moc_tytul = QtWidgets.QLabel(self.centralwidget)
         self.label_moc_tytul.setGeometry(QtCore.QRect(110, 350, 171, 31))
@@ -96,9 +97,12 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuustawienia.menuAction())
         self.menubar.addAction(self.menupomoc.menuAction())
 
+
+#---------------------------------------------------
         self.moc=0
 
         self.arduino=grzalka.Grzanie()
+
         self.miernik=miernik20.Aparature()
         self.miernik.ustaw_r
         self.miernik.zamknij(13)
@@ -107,6 +111,7 @@ class Ui_MainWindow(object):
         self.verticalSlider.valueChanged['int'].connect(self.label_moc_wartosc.setNum)
         self.verticalSlider.valueChanged['int'].connect(self.zmiana1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+#-----------------------------------------------------
 
 
 
@@ -116,14 +121,21 @@ class Ui_MainWindow(object):
         self.przycisk_start.setText(_translate("MainWindow", "Start"))
         self.przycisk_grzalka.setText(_translate("MainWindow", "Ustaw moc"))
         self.przycisk_dodatkowy.setText(_translate("MainWindow", "Dodatkowy"))
-        self.przycisk_start.clicked.connect(self.aktualizuj)
-        self.przycisk_grzalka.clicked.connect(self.zmiana2)
         self.label_moc_tytul.setText(_translate("MainWindow", "Moc grzałki"))
         self.label_moc_wartosc.setText(_translate("MainWindow", "0"))
         self.menupliki.setTitle(_translate("MainWindow", "pliki"))
         self.menuustawienia.setTitle(_translate("MainWindow", "ustawienia"))
         self.menupomoc.setTitle(_translate("MainWindow", "pomoc"))
 
+#--------------------------
+        self.przycisk_start.clicked.connect(self.aktualizuj)
+        self.przycisk_grzalka.clicked.connect(self.zmiana2)
+#--------------------------
+
+
+
+
+#-------------------------------------
     def zmiana1(self,w):
         self.moc=w
 
@@ -132,6 +144,5 @@ class Ui_MainWindow(object):
 
     def aktualizuj(self):
         y=self.miernik.mierz()
-        self.dc0.update_figure(y)
-
-
+        self.wykres_1.update_figure(y)
+#--------------------------------------

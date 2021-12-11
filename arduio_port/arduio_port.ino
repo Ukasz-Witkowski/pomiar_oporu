@@ -2,15 +2,15 @@ int moc = 0;
 int odczyt_potencjometru = 0;
 float pomoc;
 
-int grzalka=3;
+const int grzalka=D1;
 
-int led_1=6;
-int led_2=7;
-int led_3=8;
-int led_4=9;
-int led_5=10;
+int led_1=D2;
+int led_2=D3;
+int led_3=D4;
+int led_4=D5;
+int led_5=D6;
 
-int kom_pot=11;
+int kom_pot=D6;
 int potencjometr=A0;
 
 void setup() {
@@ -25,7 +25,7 @@ void setup() {
   pinMode(led_5, OUTPUT);
   pinMode(kom_pot, INPUT);
     
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop() {
@@ -51,7 +51,6 @@ if(digitalRead(kom_pot)==HIGH)
   Serial.println(moc);
 }
    
-//  odczytanaWartosc = map(odczytanaWartosc, 0, 1023, 1, 5);//Przeskalowanie wartości
   
   if (moc < 1) 
   {

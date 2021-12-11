@@ -1,15 +1,27 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+#<---------------------------
+import matplotlib
+matplotlib.use('Qt5Agg')        # używamy QT5
+import wykres
+import grzalka
+import miernik20 
+import csv
+import time
+
+#----------------------->
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+
+#<----glówne okno-----
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1200, 800)
+        MainWindow.resize(1200, 815)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.stackedWidget = QtWidgets.QStackedWidget(self.centralwidget)
-        self.stackedWidget.setGeometry(QtCore.QRect(0, 10, 1180, 750))
+        self.stackedWidget.setGeometry(QtCore.QRect(10, 10, 1180, 750))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -20,30 +32,52 @@ class Ui_MainWindow(object):
         self.stackedWidget.setObjectName("stackedWidget")
         self.page_pomiar_oporu = QtWidgets.QWidget()
         self.page_pomiar_oporu.setObjectName("page_pomiar_oporu")
+#-------------->
+
+#<----obszary wykresów------
         self.widget_temp = QtWidgets.QWidget(self.page_pomiar_oporu)
-        self.widget_temp.setGeometry(QtCore.QRect(50, 60, 430, 300))
+        self.widget_temp.setGeometry(QtCore.QRect(40, 90, 450, 260))
+        self.widget_temp.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_temp.setObjectName("widget_temp")
         self.widget_probka1 = QtWidgets.QWidget(self.page_pomiar_oporu)
-        self.widget_probka1.setGeometry(QtCore.QRect(560, 60, 430, 300))
+        self.widget_probka1.setGeometry(QtCore.QRect(40, 400, 530, 300))
+        self.widget_probka1.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_probka1.setObjectName("widget_probka1")
         self.widget_probka2 = QtWidgets.QWidget(self.page_pomiar_oporu)
-        self.widget_probka2.setGeometry(QtCore.QRect(560, 400, 430, 300))
+        self.widget_probka2.setGeometry(QtCore.QRect(610, 400, 530, 300))
+        self.widget_probka2.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_probka2.setObjectName("widget_probka2")
+#---------------->
+
+#<-----czekboxy skalalog----------
         self.skala_temp = QtWidgets.QCheckBox(self.page_pomiar_oporu)
-        self.skala_temp.setGeometry(QtCore.QRect(50, 360, 141, 20))
+        self.skala_temp.setGeometry(QtCore.QRect(50, 355, 141, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.skala_temp.setFont(font)
         self.skala_temp.setObjectName("skala_temp")
+
         self.skala_probka1 = QtWidgets.QCheckBox(self.page_pomiar_oporu)
-        self.skala_probka1.setGeometry(QtCore.QRect(560, 360, 141, 20))
+        self.skala_probka1.setGeometry(QtCore.QRect(50, 705, 81, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.skala_probka1.setFont(font)
         self.skala_probka1.setObjectName("skala_probka1")
+
         self.skala_probka2 = QtWidgets.QCheckBox(self.page_pomiar_oporu)
-        self.skala_probka2.setGeometry(QtCore.QRect(560, 700, 141, 20))
+        self.skala_probka2.setGeometry(QtCore.QRect(620, 705, 91, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.skala_probka2.setFont(font)
         self.skala_probka2.setObjectName("skala_probka2")
-        self.verticalSlider = QtWidgets.QSlider(self.page_pomiar_oporu)
-        self.verticalSlider.setGeometry(QtCore.QRect(40, 440, 41, 251))
-        self.verticalSlider.setOrientation(QtCore.Qt.Vertical)
-        self.verticalSlider.setObjectName("verticalSlider")
+#---------------------->
+
+#<---kanały probka 1-------------
         self.comboBox_kanaly1 = QtWidgets.QComboBox(self.page_pomiar_oporu)
-        self.comboBox_kanaly1.setGeometry(QtCore.QRect(1010, 90, 121, 22))
+        self.comboBox_kanaly1.setGeometry(QtCore.QRect(270, 705, 70, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.comboBox_kanaly1.setFont(font)
         self.comboBox_kanaly1.setObjectName("comboBox_kanaly1")
         self.comboBox_kanaly1.addItem("")
         self.comboBox_kanaly1.addItem("")
@@ -65,8 +99,14 @@ class Ui_MainWindow(object):
         self.comboBox_kanaly1.addItem("")
         self.comboBox_kanaly1.addItem("")
         self.comboBox_kanaly1.addItem("")
+#----------->
+
+#<---------kanały próbka 2---------
         self.comboBox_kanaly2 = QtWidgets.QComboBox(self.page_pomiar_oporu)
-        self.comboBox_kanaly2.setGeometry(QtCore.QRect(1010, 430, 121, 22))
+        self.comboBox_kanaly2.setGeometry(QtCore.QRect(840, 705, 70, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.comboBox_kanaly2.setFont(font)
         self.comboBox_kanaly2.setObjectName("comboBox_kanaly2")
         self.comboBox_kanaly2.addItem("")
         self.comboBox_kanaly2.addItem("")
@@ -88,64 +128,135 @@ class Ui_MainWindow(object):
         self.comboBox_kanaly2.addItem("")
         self.comboBox_kanaly2.addItem("")
         self.comboBox_kanaly2.addItem("")
+#---------------->
+
+#-------wybór kanałow i osi----
         self.label_wybor1 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_wybor1.setGeometry(QtCore.QRect(1010, 60, 121, 21))
+        self.label_wybor1.setGeometry(QtCore.QRect(170, 705, 91, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_wybor1.setFont(font)
         self.label_wybor1.setObjectName("label_wybor1")
-        self.label_wybor2 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_wybor2.setGeometry(QtCore.QRect(1010, 400, 121, 21))
-        self.label_wybor2.setObjectName("label_wybor2")
+
         self.label_danex1 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_danex1.setGeometry(QtCore.QRect(1010, 160, 121, 16))
+        self.label_danex1.setGeometry(QtCore.QRect(390, 705, 81, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_danex1.setFont(font)
         self.label_danex1.setObjectName("label_danex1")
+
         self.comboBox_osx1 = QtWidgets.QComboBox(self.page_pomiar_oporu)
-        self.comboBox_osx1.setGeometry(QtCore.QRect(1010, 180, 73, 22))
+        self.comboBox_osx1.setGeometry(QtCore.QRect(470, 705, 80, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.comboBox_osx1.setFont(font)
         self.comboBox_osx1.setObjectName("comboBox_osx1")
         self.comboBox_osx1.addItem("")
         self.comboBox_osx1.addItem("")
+
+        self.label_wybor2 = QtWidgets.QLabel(self.page_pomiar_oporu)
+        self.label_wybor2.setGeometry(QtCore.QRect(740, 705, 101, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_wybor2.setFont(font)
+        self.label_wybor2.setObjectName("label_wybor2")
+
         self.label_danex2 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_danex2.setGeometry(QtCore.QRect(1010, 520, 121, 16))
+        self.label_danex2.setGeometry(QtCore.QRect(960, 705, 81, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_danex2.setFont(font)
         self.label_danex2.setObjectName("label_danex2")
-        self.label_kanal1 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_kanal1.setGeometry(QtCore.QRect(1030, 130, 55, 16))
-        self.label_kanal1.setObjectName("label_kanal1")
-        self.label_osx1 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_osx1.setGeometry(QtCore.QRect(1020, 220, 55, 16))
-        self.label_osx1.setObjectName("label_osx1")
-        self.label_kanal2 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_kanal2.setGeometry(QtCore.QRect(1010, 470, 55, 16))
-        self.label_kanal2.setObjectName("label_kanal2")
-        self.label_osx2 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_osx2.setGeometry(QtCore.QRect(1040, 580, 55, 16))
-        self.label_osx2.setObjectName("label_osx2")
+
         self.comboBox_osx2 = QtWidgets.QComboBox(self.page_pomiar_oporu)
-        self.comboBox_osx2.setGeometry(QtCore.QRect(1010, 540, 73, 22))
+        self.comboBox_osx2.setGeometry(QtCore.QRect(1040, 705, 78, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.comboBox_osx2.setFont(font)
         self.comboBox_osx2.setObjectName("comboBox_osx2")
         self.comboBox_osx2.addItem("")
         self.comboBox_osx2.addItem("")
-        self.label_tryb_opor = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_tryb_opor.setGeometry(QtCore.QRect(890, 0, 251, 20))
-        self.label_tryb_opor.setObjectName("label_tryb_opor")
-        self.label_tytul1 = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_tytul1.setGeometry(QtCore.QRect(510, 0, 191, 31))
+
+        self.label_wybor1_2 = QtWidgets.QLabel(self.page_pomiar_oporu)
+        self.label_wybor1_2.setGeometry(QtCore.QRect(280, 355, 91, 22))
         font = QtGui.QFont()
-        font.setPointSize(13)
-        self.label_tytul1.setFont(font)
-        self.label_tytul1.setObjectName("label_tytul1")
-        self.label_aktualna_moc = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_aktualna_moc.setGeometry(QtCore.QRect(130, 440, 131, 16))
-        self.label_aktualna_moc.setObjectName("label_aktualna_moc")
-        self.label_aktualna_moc_wartosc = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_aktualna_moc_wartosc.setGeometry(QtCore.QRect(290, 440, 55, 16))
-        self.label_aktualna_moc_wartosc.setObjectName("label_aktualna_moc_wartosc")
-        self.przycisk_ustaw_moc = QtWidgets.QPushButton(self.page_pomiar_oporu)
-        self.przycisk_ustaw_moc.setGeometry(QtCore.QRect(120, 470, 141, 41))
-        self.przycisk_ustaw_moc.setObjectName("przycisk_ustaw_moc")
-        self.label_moc_ustawienie = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_moc_ustawienie.setGeometry(QtCore.QRect(290, 480, 31, 16))
-        self.label_moc_ustawienie.setObjectName("label_moc_ustawienie")
+        font.setPointSize(9)
+        self.label_wybor1_2.setFont(font)
+        self.label_wybor1_2.setObjectName("label_wybor1_2")
+#------------->
+
+#<------wybór kanały temeperatura----
+        self.comboBox_kanaly1_2 = QtWidgets.QComboBox(self.page_pomiar_oporu)
+        self.comboBox_kanaly1_2.setGeometry(QtCore.QRect(380, 355, 71, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.comboBox_kanaly1_2.setFont(font)
+        self.comboBox_kanaly1_2.setObjectName("comboBox_kanaly1_2")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly1_2.addItem("")
+#----------->
+
+#<-----start----
+        self.pushButton_start = QtWidgets.QPushButton(self.page_pomiar_oporu)
+        self.pushButton_start.setGeometry(QtCore.QRect(970, 240, 131, 61))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.pushButton_start.setFont(font)
+        self.pushButton_start.setObjectName("pushButton_start")
+#-------------->
+
+#<----czestotliwość-----
+        self.doubleSpinBox_czestotliowsc = QtWidgets.QDoubleSpinBox(self.page_pomiar_oporu)
+        self.doubleSpinBox_czestotliowsc.setGeometry(QtCore.QRect(800, 208, 65, 22))
+        self.doubleSpinBox_czestotliowsc.setMinimum(1.0)
+        self.doubleSpinBox_czestotliowsc.setMaximum(300.0)
+        self.doubleSpinBox_czestotliowsc.setSingleStep(1.0)
+        self.doubleSpinBox_czestotliowsc.setProperty("value", 3.0)
+        self.doubleSpinBox_czestotliowsc.setObjectName("doubleSpinBox_czestotliowsc")
+        
+        self.label_czestotliwosc = QtWidgets.QLabel(self.page_pomiar_oporu)
+        self.label_czestotliwosc.setGeometry(QtCore.QRect(540, 210, 171, 18))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        font.setStyleStrategy(QtGui.QFont.PreferDefault)
+        self.label_czestotliwosc.setFont(font)
+        self.label_czestotliwosc.setAcceptDrops(False)
+        self.label_czestotliwosc.setAutoFillBackground(False)
+        self.label_czestotliwosc.setTextFormat(QtCore.Qt.AutoText)
+        self.label_czestotliwosc.setWordWrap(True)
+        self.label_czestotliwosc.setObjectName("label_czestotliwosc")
+#------------>
+
+#<--------automatycznie śledzenie i tempo
+        self.label_srednie_tempo = QtWidgets.QLabel(self.page_pomiar_oporu)
+        self.label_srednie_tempo.setGeometry(QtCore.QRect(850, 258, 16, 18))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_srednie_tempo.setFont(font)
+        self.label_srednie_tempo.setObjectName("label_srednie_tempo")
+
         self.label_tempo = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_tempo.setGeometry(QtCore.QRect(120, 570, 161, 41))
+        self.label_tempo.setGeometry(QtCore.QRect(540, 250, 201, 36))
         font = QtGui.QFont()
+        font.setPointSize(9)
         font.setStyleStrategy(QtGui.QFont.PreferDefault)
         self.label_tempo.setFont(font)
         self.label_tempo.setAcceptDrops(False)
@@ -153,22 +264,12 @@ class Ui_MainWindow(object):
         self.label_tempo.setTextFormat(QtCore.Qt.AutoText)
         self.label_tempo.setWordWrap(True)
         self.label_tempo.setObjectName("label_tempo")
-        self.label_srednie_tempo = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_srednie_tempo.setGeometry(QtCore.QRect(290, 580, 55, 16))
-        self.label_srednie_tempo.setObjectName("label_srednie_tempo")
-        self.label_aktualna_temp_wartosc = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_aktualna_temp_wartosc.setGeometry(QtCore.QRect(290, 540, 55, 16))
-        self.label_aktualna_temp_wartosc.setObjectName("label_aktualna_temp_wartosc")
-        self.label_aktualna_temp = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_aktualna_temp.setGeometry(QtCore.QRect(130, 540, 131, 16))
-        self.label_aktualna_temp.setObjectName("label_aktualna_temp")
-        self.checkBox_sledzenie = QtWidgets.QCheckBox(self.page_pomiar_oporu)
-        self.checkBox_sledzenie.setGeometry(QtCore.QRect(120, 620, 21, 20))
-        self.checkBox_sledzenie.setText("")
-        self.checkBox_sledzenie.setObjectName("checkBox_sledzenie")
+
+
         self.label_automtyczne = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_automtyczne.setGeometry(QtCore.QRect(150, 620, 181, 31))
+        self.label_automtyczne.setGeometry(QtCore.QRect(540, 306, 209, 36))
         font = QtGui.QFont()
+        font.setPointSize(9)
         font.setStyleStrategy(QtGui.QFont.PreferDefault)
         self.label_automtyczne.setFont(font)
         self.label_automtyczne.setAcceptDrops(False)
@@ -176,66 +277,67 @@ class Ui_MainWindow(object):
         self.label_automtyczne.setTextFormat(QtCore.Qt.AutoText)
         self.label_automtyczne.setWordWrap(True)
         self.label_automtyczne.setObjectName("label_automtyczne")
-        self.doubleSpinBox = QtWidgets.QDoubleSpinBox(self.page_pomiar_oporu)
-        self.doubleSpinBox.setGeometry(QtCore.QRect(340, 620, 62, 22))
-        self.doubleSpinBox.setMinimum(-100.0)
-        self.doubleSpinBox.setMaximum(100.0)
-        self.doubleSpinBox.setProperty("value", 1.0)
-        self.doubleSpinBox.setObjectName("doubleSpinBox")
-        self.label_wprowadz_nazwe = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_wprowadz_nazwe.setGeometry(QtCore.QRect(120, 680, 221, 21))
-        self.label_wprowadz_nazwe.setObjectName("label_wprowadz_nazwe")
-        self.pushButton_start = QtWidgets.QPushButton(self.page_pomiar_oporu)
-        self.pushButton_start.setGeometry(QtCore.QRect(1020, 640, 131, 51))
+
+        self.doubleSpinBox_sledzenie = QtWidgets.QDoubleSpinBox(self.page_pomiar_oporu)
+        self.doubleSpinBox_sledzenie.setGeometry(QtCore.QRect(800, 311, 70, 22))
+        self.doubleSpinBox_sledzenie.setMinimum(-100.0)
+        self.doubleSpinBox_sledzenie.setMaximum(100.0)
+        self.doubleSpinBox_sledzenie.setProperty("value", 1.0)
+        self.doubleSpinBox_sledzenie.setObjectName("doubleSpinBox_sledzenie")
+
+        self.checkBox_sledzenie = QtWidgets.QCheckBox(self.page_pomiar_oporu)
+        self.checkBox_sledzenie.setGeometry(QtCore.QRect(750, 310, 16, 16))
+        self.checkBox_sledzenie.setText("")
+        self.checkBox_sledzenie.setObjectName("checkBox_sledzenie")
+#-------------->
+
+#<---temeperatura-----
+        self.label_aktualna_moc_wartosc = QtWidgets.QLabel(self.page_pomiar_oporu)
+        self.label_aktualna_moc_wartosc.setGeometry(QtCore.QRect(850, 130, 16, 18))
         font = QtGui.QFont()
-        font.setPointSize(12)
-        self.pushButton_start.setFont(font)
-        self.pushButton_start.setObjectName("pushButton_start")
-        self.label_test_czekboxa = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_test_czekboxa.setGeometry(QtCore.QRect(220, 370, 55, 16))
-        self.label_test_czekboxa.setObjectName("label_test_czekboxa")
-        self.label_test_spinboxa = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_test_spinboxa.setGeometry(QtCore.QRect(350, 570, 55, 16))
-        self.label_test_spinboxa.setObjectName("label_test_spinboxa")
-        self.label_test_texkt = QtWidgets.QLabel(self.page_pomiar_oporu)
-        self.label_test_texkt.setGeometry(QtCore.QRect(460, 630, 55, 16))
-        self.label_test_texkt.setObjectName("label_test_texkt")
-        self.layoutWidget = QtWidgets.QWidget(self.page_pomiar_oporu)
-        self.layoutWidget.setGeometry(QtCore.QRect(340, 680, 191, 31))
-        self.layoutWidget.setObjectName("layoutWidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.layoutWidget)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label_przedrostek = QtWidgets.QLabel(self.layoutWidget)
-        self.label_przedrostek.setMinimumSize(QtCore.QSize(60, 0))
-        self.label_przedrostek.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.label_przedrostek.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label_przedrostek.setObjectName("label_przedrostek")
-        self.horizontalLayout.addWidget(self.label_przedrostek)
-        self.nazwa_pliku = QtWidgets.QTextEdit(self.layoutWidget)
-        self.nazwa_pliku.setObjectName("nazwa_pliku")
-        self.horizontalLayout.addWidget(self.nazwa_pliku)
+        font.setPointSize(9)
+        self.label_aktualna_moc_wartosc.setFont(font)
+        self.label_aktualna_moc_wartosc.setObjectName("label_aktualna_moc_wartosc")
+        self.label_aktualna_temp = QtWidgets.QLabel(self.page_pomiar_oporu)
+        self.label_aktualna_temp.setGeometry(QtCore.QRect(540, 170, 140, 18))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_aktualna_temp.setFont(font)
+        self.label_aktualna_temp.setObjectName("label_aktualna_temp")
+
+        self.label_aktualna_temp_wartosc = QtWidgets.QLabel(self.page_pomiar_oporu)
+        self.label_aktualna_temp_wartosc.setGeometry(QtCore.QRect(850, 170, 16, 18))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_aktualna_temp_wartosc.setFont(font)
+        self.label_aktualna_temp_wartosc.setObjectName("label_aktualna_temp_wartosc")
+#-------->
+    
+#<---------moc-----
+        self.label_aktualna_moc = QtWidgets.QLabel(self.page_pomiar_oporu)
+        self.label_aktualna_moc.setGeometry(QtCore.QRect(540, 130, 81, 18))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_aktualna_moc.setFont(font)
+        self.label_aktualna_moc.setObjectName("label_aktualna_moc")
+
+        self.horizontalSlider = QtWidgets.QSlider(self.page_pomiar_oporu)
+        self.horizontalSlider.setGeometry(QtCore.QRect(910, 128, 191, 22))
+        self.horizontalSlider.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider.setObjectName("horizontalSlider")
+#---------->
         self.stackedWidget.addWidget(self.page_pomiar_oporu)
+
+#<------tryb ręczy--
         self.page_reczny = QtWidgets.QWidget()
         self.page_reczny.setObjectName("page_reczny")
-        self.label_tryb_reczny = QtWidgets.QLabel(self.page_reczny)
-        self.label_tryb_reczny.setGeometry(QtCore.QRect(1070, 1, 81, 20))
-        self.label_tryb_reczny.setObjectName("label_tryb_reczny")
-        self.label_tytul2 = QtWidgets.QLabel(self.page_reczny)
-        self.label_tytul2.setGeometry(QtCore.QRect(490, 10, 191, 31))
-        font = QtGui.QFont()
-        font.setPointSize(13)
-        self.label_tytul2.setFont(font)
-        self.label_tytul2.setObjectName("label_tytul2")
         self.widget_20probek = QtWidgets.QWidget(self.page_reczny)
-        self.widget_20probek.setGeometry(QtCore.QRect(60, 60, 681, 641))
+        self.widget_20probek.setGeometry(QtCore.QRect(40, 100, 681, 611))
+        self.widget_20probek.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.widget_20probek.setObjectName("widget_20probek")
-        self.label_wybor_kanalow2 = QtWidgets.QLabel(self.page_reczny)
-        self.label_wybor_kanalow2.setGeometry(QtCore.QRect(950, 60, 121, 21))
-        self.label_wybor_kanalow2.setObjectName("label_wybor_kanalow2")
         self.frame = QtWidgets.QFrame(self.page_reczny)
-        self.frame.setGeometry(QtCore.QRect(750, 90, 411, 501))
-        self.frame.setFrameShape(QtWidgets.QFrame.Box)
+        self.frame.setGeometry(QtCore.QRect(730, 90, 431, 541))
+        self.frame.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.frame.setFrameShadow(QtWidgets.QFrame.Plain)
         self.frame.setLineWidth(1)
         self.frame.setMidLineWidth(0)
@@ -682,34 +784,104 @@ class Ui_MainWindow(object):
         self.comboBox_20.addItem("")
         self.gridLayout_9.addWidget(self.comboBox_20, 0, 2, 1, 1)
         self.gridLayout_41.addWidget(self.frame_20, 9, 1, 1, 1)
-        self.label_wprowadz_nazwe2 = QtWidgets.QLabel(self.page_reczny)
-        self.label_wprowadz_nazwe2.setGeometry(QtCore.QRect(760, 610, 221, 21))
-        self.label_wprowadz_nazwe2.setObjectName("label_wprowadz_nazwe2")
-        self.layoutWidget_2 = QtWidgets.QWidget(self.page_reczny)
-        self.layoutWidget_2.setGeometry(QtCore.QRect(760, 640, 211, 31))
-        self.layoutWidget_2.setObjectName("layoutWidget_2")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.layoutWidget_2)
-        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.label_pzedrostek2 = QtWidgets.QLabel(self.layoutWidget_2)
-        self.label_pzedrostek2.setMinimumSize(QtCore.QSize(60, 0))
-        self.label_pzedrostek2.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.label_pzedrostek2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label_pzedrostek2.setObjectName("label_pzedrostek2")
-        self.horizontalLayout_3.addWidget(self.label_pzedrostek2)
-        self.nazwapliku2 = QtWidgets.QTextEdit(self.layoutWidget_2)
-        self.nazwapliku2.setObjectName("nazwapliku2")
-        self.horizontalLayout_3.addWidget(self.nazwapliku2)
         self.skala_reczny = QtWidgets.QCheckBox(self.page_reczny)
-        self.skala_reczny.setGeometry(QtCore.QRect(60, 30, 141, 20))
+        self.skala_reczny.setGeometry(QtCore.QRect(40, 710, 91, 20))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.skala_reczny.setFont(font)
         self.skala_reczny.setObjectName("skala_reczny")
+        self.label_czestotliwosc_2 = QtWidgets.QLabel(self.page_reczny)
+        self.label_czestotliwosc_2.setGeometry(QtCore.QRect(730, 650, 180, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        font.setStyleStrategy(QtGui.QFont.PreferDefault)
+        self.label_czestotliwosc_2.setFont(font)
+        self.label_czestotliwosc_2.setAcceptDrops(False)
+        self.label_czestotliwosc_2.setAutoFillBackground(False)
+        self.label_czestotliwosc_2.setTextFormat(QtCore.Qt.AutoText)
+        self.label_czestotliwosc_2.setWordWrap(True)
+        self.label_czestotliwosc_2.setObjectName("label_czestotliwosc_2")
+        self.doubleSpinBox_czestotliowsc_2 = QtWidgets.QDoubleSpinBox(self.page_reczny)
+        self.doubleSpinBox_czestotliowsc_2.setGeometry(QtCore.QRect(910, 650, 62, 22))
+        self.doubleSpinBox_czestotliowsc_2.setMinimum(2.0)
+        self.doubleSpinBox_czestotliowsc_2.setMaximum(300.0)
+        self.doubleSpinBox_czestotliowsc_2.setSingleStep(1.0)
+        self.doubleSpinBox_czestotliowsc_2.setProperty("value", 3.0)
+        self.doubleSpinBox_czestotliowsc_2.setObjectName("doubleSpinBox_czestotliowsc_2")
+        self.doubleSpinBox_czestotliowsc_3 = QtWidgets.QDoubleSpinBox(self.page_reczny)
+        self.doubleSpinBox_czestotliowsc_3.setGeometry(QtCore.QRect(910, 680, 62, 22))
+        self.doubleSpinBox_czestotliowsc_3.setMinimum(2.0)
+        self.doubleSpinBox_czestotliowsc_3.setMaximum(300.0)
+        self.doubleSpinBox_czestotliowsc_3.setSingleStep(1.0)
+        self.doubleSpinBox_czestotliowsc_3.setProperty("value", 3.0)
+        self.doubleSpinBox_czestotliowsc_3.setObjectName("doubleSpinBox_czestotliowsc_3")
+        self.label_czestotliwosc_3 = QtWidgets.QLabel(self.page_reczny)
+        self.label_czestotliwosc_3.setGeometry(QtCore.QRect(730, 680, 171, 22))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        font.setStyleStrategy(QtGui.QFont.PreferDefault)
+        self.label_czestotliwosc_3.setFont(font)
+        self.label_czestotliwosc_3.setAcceptDrops(False)
+        self.label_czestotliwosc_3.setAutoFillBackground(False)
+        self.label_czestotliwosc_3.setTextFormat(QtCore.Qt.AutoText)
+        self.label_czestotliwosc_3.setWordWrap(True)
+        self.label_czestotliwosc_3.setObjectName("label_czestotliwosc_3")
         self.pushButton_start2 = QtWidgets.QPushButton(self.page_reczny)
-        self.pushButton_start2.setGeometry(QtCore.QRect(1010, 620, 131, 51))
+        self.pushButton_start2.setGeometry(QtCore.QRect(1000, 650, 151, 50))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.pushButton_start2.setFont(font)
         self.pushButton_start2.setObjectName("pushButton_start2")
+#-------------->
+
         self.stackedWidget.addWidget(self.page_reczny)
+#<----zmiana trybu
+        self.comboBox = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox.setGeometry(QtCore.QRect(910, 10, 243, 25))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.comboBox.setFont(font)
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+
+        self.label_tryb_opor = QtWidgets.QLabel(self.centralwidget)
+        self.label_tryb_opor.setGeometry(QtCore.QRect(870, 10, 35, 25))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_tryb_opor.setFont(font)
+        self.label_tryb_opor.setObjectName("label_tryb_opor")
+#------>
+
+#<-----nazwa pliku
+        self.label_tytul2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_tytul2.setGeometry(QtCore.QRect(540, 10, 191, 31))
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.label_tytul2.setFont(font)
+        self.label_tytul2.setObjectName("label_tytul2")
+
+        self.nazwa_pliku = QtWidgets.QTextEdit(self.centralwidget)
+        self.nazwa_pliku.setGeometry(QtCore.QRect(280, 10, 122, 26))
+        self.nazwa_pliku.setObjectName("nazwa_pliku")
+        self.label_wprowadz_nazwe = QtWidgets.QLabel(self.centralwidget)
+        self.label_wprowadz_nazwe.setGeometry(QtCore.QRect(40, 10, 221, 26))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_wprowadz_nazwe.setFont(font)
+        self.label_wprowadz_nazwe.setObjectName("label_wprowadz_nazwe")
+        self.label_przedrostek = QtWidgets.QLabel(self.centralwidget)
+        self.label_przedrostek.setGeometry(QtCore.QRect(213, 10, 60, 26))
+        self.label_przedrostek.setMinimumSize(QtCore.QSize(60, 0))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.label_przedrostek.setFont(font)
+        self.label_przedrostek.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.label_przedrostek.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_przedrostek.setObjectName("label_przedrostek")
+#---------->
+
+#<---pasek menu---
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1200, 26))
@@ -724,27 +896,76 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.menubar.addAction(self.menuUstawienia.menuAction())
         self.menubar.addAction(self.menuPmoc.menuAction())
+#------->
+
+
+#<-----wykresy tryb 1--------------------------
+        self.wykres_1 = wykres.Wykres_dynamiczny_2(self.widget_temp, width=6, height=4, dpi=75)
+        self.wykres_2 = wykres.Wykres_dynamiczny_1(self.widget_probka1, width=6, height=4, dpi=75)
+        self.wykres_3= wykres.Wykres_dynamiczny_1(self.widget_probka2, width=6, height=4, dpi=75)
+
+        self.kanal_p1=0
+        self.kanal_p2=0
+        self.kanal_t=0
+#----------------------------------------->
+
+#<----wykres tryb 2----------------------
+        self.wykres_4 = wykres.Wykres_dynamiczny_2(self.widget_20probek, width=9, height=9, dpi=75)
+#----------------------------------------->
+
+#<---plik--------
+        self.pilk_wyjsciowy="test.cvs"
+#----------->
+
+#<---połączenia-----
+        self.comboBox_kanaly1.activated['int'].connect(self.zmiana_kanal1)
+        self.comboBox_kanaly2.activated['int'].connect(self.zmiana_kanal2)
+    #    self.comboBox_kanaly3.activated['int'].connect(self.zmiana_kanal3)
+        # self.comboBox_osx1.activated['int'].connect(self.label_osx1.setNum)
+        # self.comboBox_kanaly2.activated['int'].connect(self.label_kanal2.setNum)
+        # self.comboBox_osx2.activated['int'].connect(self.label_osx2.setNum)
+        #  self.skala_temp.stateChanged['int'].connect(self.label_test_czekboxa.setNum)
+        # self.doubleSpinBox_sledzenie.valueChanged['double'].connect(self.label_test_spinboxa.setNum)
+        # self.nazwa_pliku.textChanged.connect(self.label_test_texkt.clear)
+
+        self.comboBox.activated['int'].connect(self.stackedWidget.setCurrentIndex)
+        self.moc=0
+        self.czestotliwosc=4
+        self.x1_raw=0
+        self.x2_raw=0
+        self.x3_raw=0
+        self.x4_raw=0
+
+        self.arduino=grzalka.Grzanie()
+
+        self.miernik=miernik20.Aparature()
+        self.miernik.ustaw_r
+        self.miernik.zamknij(13)
+
+    #        self.verticalSlider.valueChanged['int'].connect(self.label_moc_ustawienie.setNum)
+    #        self.verticalSlider.valueChanged['int'].connect(self.zmiana_moc)
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
-        self.comboBox_kanaly1.activated['int'].connect(self.label_kanal1.setNum)
-        self.comboBox_osx1.activated['int'].connect(self.label_osx1.setNum)
-        self.comboBox_kanaly2.activated['int'].connect(self.label_kanal2.setNum)
-        self.comboBox_osx2.activated['int'].connect(self.label_osx2.setNum)
-        self.skala_temp.stateChanged['int'].connect(self.label_test_czekboxa.setNum)
-        self.doubleSpinBox.valueChanged['double'].connect(self.label_test_spinboxa.setNum)
-        self.nazwa_pliku.textChanged.connect(self.label_test_texkt.clear)
-        self.verticalSlider.valueChanged['int'].connect(self.label_moc_ustawienie.setNum)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+#----->
+
+#<---zmienne---
+        self.pomiar_start=0
+        self.czas_0=0
+#---->
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.skala_temp.setText(_translate("MainWindow", "Skala logarytmiczna"))
-        self.skala_probka1.setText(_translate("MainWindow", "Skala logarytmiczna"))
-        self.skala_probka2.setText(_translate("MainWindow", "Skala logarytmiczna"))
+        
+    #<---kanały, osie, wykresy--
+        self.skala_temp.setText(_translate("MainWindow", "Skala log"))
+        self.skala_probka1.setText(_translate("MainWindow", "Skala log"))
+        self.skala_probka2.setText(_translate("MainWindow", "Skala log"))
+        
         self.comboBox_kanaly1.setCurrentText(_translate("MainWindow", "brak"))
-        self.comboBox_kanaly1.setItemText(0, _translate("MainWindow", "brak"))
+        self.comboBox_kanaly1.setItemText(0, _translate("MainWindow", "Kanał 1"))
         self.comboBox_kanaly1.setItemText(1, _translate("MainWindow", "Kanał 2"))
         self.comboBox_kanaly1.setItemText(2, _translate("MainWindow", "Kanał 3"))
         self.comboBox_kanaly1.setItemText(3, _translate("MainWindow", "Kanał 4"))
@@ -764,7 +985,8 @@ class Ui_MainWindow(object):
         self.comboBox_kanaly1.setItemText(17, _translate("MainWindow", "Kanał 18"))
         self.comboBox_kanaly1.setItemText(18, _translate("MainWindow", "Kanał 19"))
         self.comboBox_kanaly1.setItemText(19, _translate("MainWindow", "Kanał 20"))
-        self.comboBox_kanaly2.setItemText(0, _translate("MainWindow", "brak"))
+
+        self.comboBox_kanaly2.setItemText(0, _translate("MainWindow", "Kanał 1"))
         self.comboBox_kanaly2.setItemText(1, _translate("MainWindow", "Kanał 2"))
         self.comboBox_kanaly2.setItemText(2, _translate("MainWindow", "Kanał 3"))
         self.comboBox_kanaly2.setItemText(3, _translate("MainWindow", "Kanał 4"))
@@ -784,38 +1006,50 @@ class Ui_MainWindow(object):
         self.comboBox_kanaly2.setItemText(17, _translate("MainWindow", "Kanał 18"))
         self.comboBox_kanaly2.setItemText(18, _translate("MainWindow", "Kanał 19"))
         self.comboBox_kanaly2.setItemText(19, _translate("MainWindow", "Kanał 20"))
+
+        self.comboBox_kanaly1_2.setCurrentText(_translate("MainWindow", "brak"))
+        self.comboBox_kanaly1_2.setItemText(0, _translate("MainWindow", "Kanał 1"))
+        self.comboBox_kanaly1_2.setItemText(1, _translate("MainWindow", "Kanał 2"))
+        self.comboBox_kanaly1_2.setItemText(2, _translate("MainWindow", "Kanał 3"))
+        self.comboBox_kanaly1_2.setItemText(3, _translate("MainWindow", "Kanał 4"))
+        self.comboBox_kanaly1_2.setItemText(4, _translate("MainWindow", "Kanał 5"))
+        self.comboBox_kanaly1_2.setItemText(5, _translate("MainWindow", "Kanał 6"))
+        self.comboBox_kanaly1_2.setItemText(6, _translate("MainWindow", "Kanał 7"))
+        self.comboBox_kanaly1_2.setItemText(7, _translate("MainWindow", "Kanał 8"))
+        self.comboBox_kanaly1_2.setItemText(8, _translate("MainWindow", "Kanał 9"))
+        self.comboBox_kanaly1_2.setItemText(9, _translate("MainWindow", "Kanał 10"))
+        self.comboBox_kanaly1_2.setItemText(10, _translate("MainWindow", "Kanał 11"))
+        self.comboBox_kanaly1_2.setItemText(11, _translate("MainWindow", "Kanał 12"))
+        self.comboBox_kanaly1_2.setItemText(12, _translate("MainWindow", "Kanał 13"))
+        self.comboBox_kanaly1_2.setItemText(13, _translate("MainWindow", "Kanał 14"))
+        self.comboBox_kanaly1_2.setItemText(14, _translate("MainWindow", "Kanał 15"))
+        self.comboBox_kanaly1_2.setItemText(15, _translate("MainWindow", "Kanał 16"))
+        self.comboBox_kanaly1_2.setItemText(16, _translate("MainWindow", "Kanał 17"))
+        self.comboBox_kanaly1_2.setItemText(17, _translate("MainWindow", "Kanał 18"))
+        self.comboBox_kanaly1_2.setItemText(18, _translate("MainWindow", "Kanał 19"))
+        self.comboBox_kanaly1_2.setItemText(19, _translate("MainWindow", "Kanał 20"))
+
         self.label_wybor1.setText(_translate("MainWindow", "Wybór kanału"))
         self.label_wybor2.setText(_translate("MainWindow", "Wybór kanału"))
         self.label_danex1.setText(_translate("MainWindow", "Dane osi X:"))
-        self.comboBox_osx1.setItemText(0, _translate("MainWindow", "Temperatura [K]"))
-        self.comboBox_osx1.setItemText(1, _translate("MainWindow", "Czas [s]"))
+        self.comboBox_osx1.setItemText(0, _translate("MainWindow", "T [K]"))
+        self.comboBox_osx1.setItemText(1, _translate("MainWindow", "t [s]"))
         self.label_danex2.setText(_translate("MainWindow", "Dane osi X:"))
-        self.label_kanal1.setText(_translate("MainWindow", "TextLabel"))
-        self.label_osx1.setText(_translate("MainWindow", "TextLabel"))
-        self.label_kanal2.setText(_translate("MainWindow", "TextLabel"))
-        self.label_osx2.setText(_translate("MainWindow", "TextLabel"))
-        self.comboBox_osx2.setItemText(0, _translate("MainWindow", "Temperatura [K]"))
-        self.comboBox_osx2.setItemText(1, _translate("MainWindow", "Czas [s]"))
-        self.label_tryb_opor.setText(_translate("MainWindow", "Tryb: pomiar oporu w funkcji temperatury"))
-        self.label_tytul1.setText(_translate("MainWindow", "Nazawa_pomiaru"))
-        self.label_aktualna_moc.setText(_translate("MainWindow", "Aktualna moc grzałki:"))
-        self.label_aktualna_moc_wartosc.setText(_translate("MainWindow", "0"))
-        self.przycisk_ustaw_moc.setText(_translate("MainWindow", "Ustaw moc grzałki"))
-        self.label_moc_ustawienie.setText(_translate("MainWindow", "0"))
-        self.label_tempo.setText(_translate("MainWindow", "Średnie tempo przyrostu temperatury:"))
-        self.label_srednie_tempo.setText(_translate("MainWindow", "0"))
-        self.label_aktualna_temp_wartosc.setText(_translate("MainWindow", "0"))
-        self.label_aktualna_temp.setText(_translate("MainWindow", "Aktualna temperatura:"))
+        self.comboBox_osx2.setItemText(0, _translate("MainWindow", "T [K]"))
+        self.comboBox_osx2.setItemText(1, _translate("MainWindow", "t [s]"))
+        self.label_wybor1_2.setText(_translate("MainWindow", "Wybór kanału"))
+
+    #------>
         self.label_automtyczne.setText(_translate("MainWindow", "Automatyczne śledzenie tempa przyrostu temperatury [K/min]"))
-        self.label_wprowadz_nazwe.setText(_translate("MainWindow", "Wprowadź nazwę pliku wyjściowego:"))
+        self.label_srednie_tempo.setText(_translate("MainWindow", "0"))
+        self.label_czestotliwosc.setText(_translate("MainWindow", "Częstotliwość próbkowania"))
+        self.label_aktualna_moc_wartosc.setText(_translate("MainWindow", "0"))
+        self.label_aktualna_temp.setText(_translate("MainWindow", "Aktualna temperatura:"))
+        self.label_tempo.setText(_translate("MainWindow", "Średnie tempo przyrostu temperatury:"))
+        self.label_aktualna_temp_wartosc.setText(_translate("MainWindow", "0"))
+        self.label_aktualna_moc.setText(_translate("MainWindow", "Moc grzałki:"))
         self.pushButton_start.setText(_translate("MainWindow", "Start"))
-        self.label_test_czekboxa.setText(_translate("MainWindow", "TextLabel"))
-        self.label_test_spinboxa.setText(_translate("MainWindow", "TextLabel"))
-        self.label_test_texkt.setText(_translate("MainWindow", "TextLabel"))
-        self.label_przedrostek.setText(_translate("MainWindow", "data_"))
-        self.label_tryb_reczny.setText(_translate("MainWindow", "Tryb: ręczny"))
-        self.label_tytul2.setText(_translate("MainWindow", "Nazawa_pomiaru"))
-        self.label_wybor_kanalow2.setText(_translate("MainWindow", "Wybór kanałów:"))
+    #<----tryb reczny---    
         self.label_1.setText(_translate("MainWindow", "Kanał 1"))
         self.comboBox_1.setItemText(0, _translate("MainWindow", "Napięcie [v]"))
         self.comboBox_1.setItemText(1, _translate("MainWindow", "Opór [Ohm]"))
@@ -876,13 +1110,100 @@ class Ui_MainWindow(object):
         self.label_20.setText(_translate("MainWindow", "Kanał 20"))
         self.comboBox_20.setItemText(0, _translate("MainWindow", "Napięcie [v]"))
         self.comboBox_20.setItemText(1, _translate("MainWindow", "Opór [Ohm]"))
-        self.label_wprowadz_nazwe2.setText(_translate("MainWindow", "Wprowadź nazwę pliku wyjściowego:"))
-        self.label_pzedrostek2.setText(_translate("MainWindow", "data_"))
-        self.skala_reczny.setText(_translate("MainWindow", "Skala logarytmiczna"))
+        self.skala_reczny.setText(_translate("MainWindow", "Skala log"))
+        self.label_czestotliwosc_2.setText(_translate("MainWindow", "Okres między kanałami [s]"))
+        self.label_czestotliwosc_3.setText(_translate("MainWindow", "Okres między seriami [s]"))
         self.pushButton_start2.setText(_translate("MainWindow", "Start"))
+    #----------->
+        self.comboBox.setItemText(0, _translate("MainWindow", "Pomiar oporu w funkcji temeperatury"))
+        self.comboBox.setItemText(1, _translate("MainWindow", "Ręczny"))
+        self.label_tryb_opor.setText(_translate("MainWindow", "Tryb: "))
+        self.label_tytul2.setText(_translate("MainWindow", "Nazwa_pomiaru"))
+        self.label_wprowadz_nazwe.setText(_translate("MainWindow", "Nazwa pliku wyjściowego:"))
+        self.label_przedrostek.setText(_translate("MainWindow", "data_"))
         self.menuUstawienia.setTitle(_translate("MainWindow", "Ustawienia"))
         self.menuPmoc.setTitle(_translate("MainWindow", "Pomoc"))
+#<-------------------------
+        self.pushButton_start.clicked.connect(self.start_stop)
+        self.pushButton_start.clicked.connect(self.poczatek)
+    #    self.przycisk_ustaw_moc.clicked.connect(self.zmiana_moc_do_arduino)
+#------------------------->
 
+#<------------------------------------
+
+    def poczatek(self):
+        self.czas_0=time.time()
+
+    def zmiana_moc(self,w):
+        self.moc=w
+
+    def start_stop(self):
+        if( self.pomiar_start == 0):
+            self.pomiar_start=1
+            self.pushButton_start.setText("Stop")
+            self.pomiar()
+        else:
+            self.pomiar_start=0
+            self.pushButton_start.setText("Start")
+            self.timer_out.stop()
+
+
+
+    def zmiana_moc_do_arduino(self):
+        self.arduino.zmien_moc(self.moc)
+        self.label_aktualna_moc_wartosc.setText(str(self.moc))
+
+    def zmiana_kanal1(self,ch):
+        self.kanal_p1=ch+1
+        print("Ustawiono kanal pierwszej probki na: "+str(self.kanal_p1))
+    def zmiana_kanal2(self,ch):
+        self.kanal_p2=ch+1  
+        print("Ustawiono kanal drugiej probki na: "+str(self.kanal_p2))
+    def zmiana_kanal3(self,ch):
+        self.kanal_t=ch+1    
+        print("Ustawiono kanal temperatury probki na: "+ str(self.kanal_t))
+
+    def aktualizuj(self):
+        y=self.miernik.mierz()
+        self.wykres_1.update_figure(y)
+
+    def zapis_prztworzone(self,t,T,p1,p2):
+        with open(self.pilk_wyjsciowy,"a") as f:
+            writer = csv.writer(f, delimiter=",")
+            writer.writerow( [t, T, p1, p2])
+
+
+    def pomiar(self):
+        self.timer_out = QtCore.QTimer()
+        self.pomiar_in_a()
+        self.timer_out.timeout.connect(self.pomiar_in_a)
+        self.timer_out.start(1000*self.czestotliwosc)
+
+    def pomiar_in_a(self):
+        self.p1=0
+        self.p2=0
+        self.timer_in = QtCore.QTimer()
+        self.pomiar_in_b()
+        self.timer_in.timeout.connect(self.pomiar_in_b)
+        self.timer_in.start(200)
+
+
+    def pomiar_in_b(self):
+        if(self.p1<4):
+            if(self.p2==0):
+                self.miernik.zamknij(self.p1+1)
+                print(time.time()-self.czas_0)
+                self.p2=1
+            else:
+                self.x1_raw=self.miernik.mierz()
+                print(time.time()-self.czas_0)
+                print( "odzczyt nr " +str(self.p1+1) + " wynosi: "+str(self.x1_raw) )                 
+                self.p1+=1
+                self.p2=0
+        else:
+            self.timer_in.stop()
+
+#-------------------------------------->
 
 if __name__ == "__main__":
     import sys

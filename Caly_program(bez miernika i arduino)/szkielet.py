@@ -9,7 +9,6 @@ import grzalka
 import miernik20 
 import csv
 import time
-
 #----------------------->
 
 class Ui_MainWindow(object):
@@ -186,32 +185,32 @@ class Ui_MainWindow(object):
 #------------->
 
 #<------wybór kanały temeperatura----
-        self.comboBox_kanaly1_2 = QtWidgets.QComboBox(self.page_pomiar_oporu)
-        self.comboBox_kanaly1_2.setGeometry(QtCore.QRect(380, 355, 71, 22))
+        self.comboBox_kanaly0 = QtWidgets.QComboBox(self.page_pomiar_oporu)
+        self.comboBox_kanaly0.setGeometry(QtCore.QRect(380, 355, 71, 22))
         font = QtGui.QFont()
         font.setPointSize(9)
-        self.comboBox_kanaly1_2.setFont(font)
-        self.comboBox_kanaly1_2.setObjectName("comboBox_kanaly1_2")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
-        self.comboBox_kanaly1_2.addItem("")
+        self.comboBox_kanaly0.setFont(font)
+        self.comboBox_kanaly0.setObjectName("comboBox_kanaly0")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
+        self.comboBox_kanaly0.addItem("")
 #----------->
 
 #<-----start----
@@ -861,17 +860,20 @@ class Ui_MainWindow(object):
         self.label_tytul2.setFont(font)
         self.label_tytul2.setObjectName("label_tytul2")
 
-        self.nazwa_pliku = QtWidgets.QTextEdit(self.centralwidget)
-        self.nazwa_pliku.setGeometry(QtCore.QRect(280, 10, 122, 26))
+        self.nazwa_pliku = QtWidgets.QLineEdit(self.centralwidget)
+        self.nazwa_pliku.setGeometry(QtCore.QRect(310, 10, 122, 26))
         self.nazwa_pliku.setObjectName("nazwa_pliku")
+
+
         self.label_wprowadz_nazwe = QtWidgets.QLabel(self.centralwidget)
         self.label_wprowadz_nazwe.setGeometry(QtCore.QRect(40, 10, 221, 26))
         font = QtGui.QFont()
         font.setPointSize(9)
         self.label_wprowadz_nazwe.setFont(font)
         self.label_wprowadz_nazwe.setObjectName("label_wprowadz_nazwe")
+
         self.label_przedrostek = QtWidgets.QLabel(self.centralwidget)
-        self.label_przedrostek.setGeometry(QtCore.QRect(213, 10, 60, 26))
+        self.label_przedrostek.setGeometry(QtCore.QRect(213, 10, 90, 26))
         self.label_przedrostek.setMinimumSize(QtCore.QSize(60, 0))
         font = QtGui.QFont()
         font.setPointSize(9)
@@ -904,9 +906,8 @@ class Ui_MainWindow(object):
         self.wykres_2 = wykres.Wykres_dynamiczny_1(self.widget_probka1, width=6, height=4, dpi=75)
         self.wykres_3= wykres.Wykres_dynamiczny_1(self.widget_probka2, width=6, height=4, dpi=75)
 
-        self.kanal_p1=0
-        self.kanal_p2=0
-        self.kanal_t=0
+        self.kanaly=[0,0,0]
+
 #----------------------------------------->
 
 #<----wykres tryb 2----------------------
@@ -917,43 +918,44 @@ class Ui_MainWindow(object):
         self.pilk_wyjsciowy="test.cvs"
 #----------->
 
-#<---połączenia-----
-        self.comboBox_kanaly1.activated['int'].connect(self.zmiana_kanal1)
-        self.comboBox_kanaly2.activated['int'].connect(self.zmiana_kanal2)
-    #    self.comboBox_kanaly3.activated['int'].connect(self.zmiana_kanal3)
-        # self.comboBox_osx1.activated['int'].connect(self.label_osx1.setNum)
-        # self.comboBox_kanaly2.activated['int'].connect(self.label_kanal2.setNum)
-        # self.comboBox_osx2.activated['int'].connect(self.label_osx2.setNum)
-        #  self.skala_temp.stateChanged['int'].connect(self.label_test_czekboxa.setNum)
-        # self.doubleSpinBox_sledzenie.valueChanged['double'].connect(self.label_test_spinboxa.setNum)
-        # self.nazwa_pliku.textChanged.connect(self.label_test_texkt.clear)
-
-        self.comboBox.activated['int'].connect(self.stackedWidget.setCurrentIndex)
+#<---zmienne---
         self.moc=0
         self.czestotliwosc=4
+        self.data_pomiaru = time.strftime("%m_%d_%Y_", time.localtime())
+        self.plik_wyjsciowy="test"
         self.x1_raw=0
         self.x2_raw=0
         self.x3_raw=0
         self.x4_raw=0
-
         self.arduino=grzalka.Grzanie()
-
         self.miernik=miernik20.Aparature()
-        self.miernik.ustaw_r
-        self.miernik.zamknij(13)
+        self.miernik.ustaw_r       
+        self.pomiar_start=0
+        self.czas_0=0
+#---->
 
-    #        self.verticalSlider.valueChanged['int'].connect(self.label_moc_ustawienie.setNum)
-    #        self.verticalSlider.valueChanged['int'].connect(self.zmiana_moc)
+#<---połączenia-----
+        self.comboBox_kanaly0.activated['int'].connect(self.zmiana_kanal0)
+        self.comboBox_kanaly1.activated['int'].connect(self.zmiana_kanal1)
+        self.comboBox_kanaly2.activated['int'].connect(self.zmiana_kanal2)
+
+        # self.comboBox_osx1.activated['int'].connect(self.label_osx1.setNum)
+        # self.comboBox_osx2.activated['int'].connect(self.label_osx2.setNum)
+        # self.skala_temp.stateChanged['int'].connect(self.label_test_czekboxa.setNum)
+        self.doubleSpinBox_czestotliowsc.valueChanged['double'].connect(self.zmiana_czestotliwosc)
+
+        self.nazwa_pliku.textChanged['QString'].connect(self.zmiana_nazwa)
+
+        self.horizontalSlider.valueChanged['int'].connect(self.zmiana_moc)
+        self.horizontalSlider.sliderReleased.connect(self.moc_do_arduino)
+
+        self.comboBox.activated['int'].connect(self.stackedWidget.setCurrentIndex)
+#----->
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-#----->
 
-#<---zmienne---
-        self.pomiar_start=0
-        self.czas_0=0
-#---->
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -1007,27 +1009,27 @@ class Ui_MainWindow(object):
         self.comboBox_kanaly2.setItemText(18, _translate("MainWindow", "Kanał 19"))
         self.comboBox_kanaly2.setItemText(19, _translate("MainWindow", "Kanał 20"))
 
-        self.comboBox_kanaly1_2.setCurrentText(_translate("MainWindow", "brak"))
-        self.comboBox_kanaly1_2.setItemText(0, _translate("MainWindow", "Kanał 1"))
-        self.comboBox_kanaly1_2.setItemText(1, _translate("MainWindow", "Kanał 2"))
-        self.comboBox_kanaly1_2.setItemText(2, _translate("MainWindow", "Kanał 3"))
-        self.comboBox_kanaly1_2.setItemText(3, _translate("MainWindow", "Kanał 4"))
-        self.comboBox_kanaly1_2.setItemText(4, _translate("MainWindow", "Kanał 5"))
-        self.comboBox_kanaly1_2.setItemText(5, _translate("MainWindow", "Kanał 6"))
-        self.comboBox_kanaly1_2.setItemText(6, _translate("MainWindow", "Kanał 7"))
-        self.comboBox_kanaly1_2.setItemText(7, _translate("MainWindow", "Kanał 8"))
-        self.comboBox_kanaly1_2.setItemText(8, _translate("MainWindow", "Kanał 9"))
-        self.comboBox_kanaly1_2.setItemText(9, _translate("MainWindow", "Kanał 10"))
-        self.comboBox_kanaly1_2.setItemText(10, _translate("MainWindow", "Kanał 11"))
-        self.comboBox_kanaly1_2.setItemText(11, _translate("MainWindow", "Kanał 12"))
-        self.comboBox_kanaly1_2.setItemText(12, _translate("MainWindow", "Kanał 13"))
-        self.comboBox_kanaly1_2.setItemText(13, _translate("MainWindow", "Kanał 14"))
-        self.comboBox_kanaly1_2.setItemText(14, _translate("MainWindow", "Kanał 15"))
-        self.comboBox_kanaly1_2.setItemText(15, _translate("MainWindow", "Kanał 16"))
-        self.comboBox_kanaly1_2.setItemText(16, _translate("MainWindow", "Kanał 17"))
-        self.comboBox_kanaly1_2.setItemText(17, _translate("MainWindow", "Kanał 18"))
-        self.comboBox_kanaly1_2.setItemText(18, _translate("MainWindow", "Kanał 19"))
-        self.comboBox_kanaly1_2.setItemText(19, _translate("MainWindow", "Kanał 20"))
+        self.comboBox_kanaly0.setCurrentText(_translate("MainWindow", "brak"))
+        self.comboBox_kanaly0.setItemText(0, _translate("MainWindow", "Kanał 1"))
+        self.comboBox_kanaly0.setItemText(1, _translate("MainWindow", "Kanał 2"))
+        self.comboBox_kanaly0.setItemText(2, _translate("MainWindow", "Kanał 3"))
+        self.comboBox_kanaly0.setItemText(3, _translate("MainWindow", "Kanał 4"))
+        self.comboBox_kanaly0.setItemText(4, _translate("MainWindow", "Kanał 5"))
+        self.comboBox_kanaly0.setItemText(5, _translate("MainWindow", "Kanał 6"))
+        self.comboBox_kanaly0.setItemText(6, _translate("MainWindow", "Kanał 7"))
+        self.comboBox_kanaly0.setItemText(7, _translate("MainWindow", "Kanał 8"))
+        self.comboBox_kanaly0.setItemText(8, _translate("MainWindow", "Kanał 9"))
+        self.comboBox_kanaly0.setItemText(9, _translate("MainWindow", "Kanał 10"))
+        self.comboBox_kanaly0.setItemText(10, _translate("MainWindow", "Kanał 11"))
+        self.comboBox_kanaly0.setItemText(11, _translate("MainWindow", "Kanał 12"))
+        self.comboBox_kanaly0.setItemText(12, _translate("MainWindow", "Kanał 13"))
+        self.comboBox_kanaly0.setItemText(13, _translate("MainWindow", "Kanał 14"))
+        self.comboBox_kanaly0.setItemText(14, _translate("MainWindow", "Kanał 15"))
+        self.comboBox_kanaly0.setItemText(15, _translate("MainWindow", "Kanał 16"))
+        self.comboBox_kanaly0.setItemText(16, _translate("MainWindow", "Kanał 17"))
+        self.comboBox_kanaly0.setItemText(17, _translate("MainWindow", "Kanał 18"))
+        self.comboBox_kanaly0.setItemText(18, _translate("MainWindow", "Kanał 19"))
+        self.comboBox_kanaly0.setItemText(19, _translate("MainWindow", "Kanał 20"))
 
         self.label_wybor1.setText(_translate("MainWindow", "Wybór kanału"))
         self.label_wybor2.setText(_translate("MainWindow", "Wybór kanału"))
@@ -1039,7 +1041,7 @@ class Ui_MainWindow(object):
         self.comboBox_osx2.setItemText(1, _translate("MainWindow", "t [s]"))
         self.label_wybor1_2.setText(_translate("MainWindow", "Wybór kanału"))
 
-    #------>
+    #---jeszcze cos--->
         self.label_automtyczne.setText(_translate("MainWindow", "Automatyczne śledzenie tempa przyrostu temperatury [K/min]"))
         self.label_srednie_tempo.setText(_translate("MainWindow", "0"))
         self.label_czestotliwosc.setText(_translate("MainWindow", "Częstotliwość próbkowania"))
@@ -1049,6 +1051,7 @@ class Ui_MainWindow(object):
         self.label_aktualna_temp_wartosc.setText(_translate("MainWindow", "0"))
         self.label_aktualna_moc.setText(_translate("MainWindow", "Moc grzałki:"))
         self.pushButton_start.setText(_translate("MainWindow", "Start"))
+    #--------->
     #<----tryb reczny---    
         self.label_1.setText(_translate("MainWindow", "Kanał 1"))
         self.comboBox_1.setItemText(0, _translate("MainWindow", "Napięcie [v]"))
@@ -1120,22 +1123,18 @@ class Ui_MainWindow(object):
         self.label_tryb_opor.setText(_translate("MainWindow", "Tryb: "))
         self.label_tytul2.setText(_translate("MainWindow", "Nazwa_pomiaru"))
         self.label_wprowadz_nazwe.setText(_translate("MainWindow", "Nazwa pliku wyjściowego:"))
-        self.label_przedrostek.setText(_translate("MainWindow", "data_"))
+        self.label_przedrostek.setText(_translate("MainWindow", self.data_pomiaru))
         self.menuUstawienia.setTitle(_translate("MainWindow", "Ustawienia"))
         self.menuPmoc.setTitle(_translate("MainWindow", "Pomoc"))
 #<-------------------------
         self.pushButton_start.clicked.connect(self.start_stop)
         self.pushButton_start.clicked.connect(self.poczatek)
-    #    self.przycisk_ustaw_moc.clicked.connect(self.zmiana_moc_do_arduino)
 #------------------------->
 
-#<------------------------------------
+#<---funkcje--------------------
 
     def poczatek(self):
         self.czas_0=time.time()
-
-    def zmiana_moc(self,w):
-        self.moc=w
 
     def start_stop(self):
         if( self.pomiar_start == 0):
@@ -1147,21 +1146,30 @@ class Ui_MainWindow(object):
             self.pushButton_start.setText("Start")
             self.timer_out.stop()
 
-
-
-    def zmiana_moc_do_arduino(self):
-        self.arduino.zmien_moc(self.moc)
+    def zmiana_moc(self,w):
+        self.moc=w
         self.label_aktualna_moc_wartosc.setText(str(self.moc))
 
+    def zmiana_czestotliwosc(self,f):
+        self.czestotliwosc=f
+    
+    def zmiana_nazwa(self,n):
+        self.plik_wyjsciowy=self.data_pomiaru+n
+        self.label_tytul2.setText(n)
+
+    def moc_do_arduino(self):
+        self.arduino.zmien_moc(self.moc)
+
+    def zmiana_kanal0(self,ch):
+        self.kanaly[0]=ch+1
+        print("Ustawiono kanal pierwszej probki na: "+str(self.kanaly[0]))
+
     def zmiana_kanal1(self,ch):
-        self.kanal_p1=ch+1
-        print("Ustawiono kanal pierwszej probki na: "+str(self.kanal_p1))
+        self.kanaly[1]=ch+1  
+        print("Ustawiono kanal drugiej probki na: "+str(self.kanaly[1]))
     def zmiana_kanal2(self,ch):
-        self.kanal_p2=ch+1  
-        print("Ustawiono kanal drugiej probki na: "+str(self.kanal_p2))
-    def zmiana_kanal3(self,ch):
-        self.kanal_t=ch+1    
-        print("Ustawiono kanal temperatury probki na: "+ str(self.kanal_t))
+        self.kanaly[2]=ch+1    
+        print("Ustawiono kanal temperatury probki na: "+ str(self.kanaly[2]))
 
     def aktualizuj(self):
         y=self.miernik.mierz()
@@ -1171,7 +1179,6 @@ class Ui_MainWindow(object):
         with open(self.pilk_wyjsciowy,"a") as f:
             writer = csv.writer(f, delimiter=",")
             writer.writerow( [t, T, p1, p2])
-
 
     def pomiar(self):
         self.timer_out = QtCore.QTimer()
@@ -1187,11 +1194,10 @@ class Ui_MainWindow(object):
         self.timer_in.timeout.connect(self.pomiar_in_b)
         self.timer_in.start(200)
 
-
     def pomiar_in_b(self):
         if(self.p1<4):
             if(self.p2==0):
-                self.miernik.zamknij(self.p1+1)
+                self.miernik.zamknij(self.kanaly[self.p1%3])
                 print(time.time()-self.czas_0)
                 self.p2=1
             else:

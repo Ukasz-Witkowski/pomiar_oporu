@@ -22,13 +22,6 @@ class Figura_wykresu(FigureCanvas):
     def compute_initial_figure(self):
         pass
 
-class Wykres_statyczny(Figura_wykresu):
-    def compute_initial_figure(self):
-        t = arange(0.0, 3.0, 0.01)
-        s = sin(2*pi*t)
-        self.axes.plot(t, s)
-
-
 class Wykres_dynamiczny_1(Figura_wykresu):
 
     def __init__(self, *args, **kwargs):
@@ -59,9 +52,6 @@ class Wykres_dynamiczny_1(Figura_wykresu):
         self.draw()
 
 class Wykres_dynamiczny_2(Figura_wykresu):
-
-
-
     def __init__(self, *args, **kwargs):
         Figura_wykresu.__init__(self, *args, **kwargs)
 
@@ -71,7 +61,6 @@ class Wykres_dynamiczny_2(Figura_wykresu):
         self.axes.plot(self.x_var,self.y_var, 'b')
 
     def update_figure(self,y):
-
         data = float(y)
         #print(data)
         with open("test_data_3.csv","a") as f:

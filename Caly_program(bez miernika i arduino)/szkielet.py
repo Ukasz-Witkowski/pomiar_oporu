@@ -9,6 +9,7 @@ import grzalka
 import miernik20 
 import csv
 import time
+import numpy as np
 #----------------------->
 
 class Ui_MainWindow(object):
@@ -902,16 +903,33 @@ class Ui_MainWindow(object):
 
 
 #<-----wykresy tryb 1--------------------------
-        self.wykres_1 = wykres.Wykres_dynamiczny_2(self.widget_temp, width=6, height=4, dpi=75)
-        self.wykres_2 = wykres.Wykres_dynamiczny_1(self.widget_probka1, width=6, height=4, dpi=75)
-        self.wykres_3= wykres.Wykres_dynamiczny_1(self.widget_probka2, width=6, height=4, dpi=75)
+        self.gridLayout_0 = QtWidgets.QGridLayout(self.widget_temp)
+        self.gridLayout_0.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_0.setObjectName("gridLayout_1")
+        self.wykres_1 = wykres.Wykres_temp(self.widget_temp, dpi=90)
+        self.wykres_1.setObjectName("wykres_1")
+        self.gridLayout_0.addWidget(self.wykres_1, 0, 0, 1, 1)
+
+        self.gridLayout_1 = QtWidgets.QGridLayout(self.widget_probka1)
+        self.gridLayout_1.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_1.setObjectName("gridLayout_1")
+        self.wykres_2 = wykres.Wykres_probka(self.widget_probka1, dpi=90)
+        self.wykres_2.setObjectName("wykres_2")
+        self.gridLayout_1.addWidget(self.wykres_2, 0, 0, 1, 1)
+
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.widget_probka2)
+        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_2.setObjectName("gridLayout_1")
+        self.wykres_3 = wykres.Wykres_probka(self.widget_probka2, dpi=90)
+        self.wykres_3.setObjectName("wykres_3")
+        self.gridLayout_2.addWidget(self.wykres_3, 0, 0, 1, 1)
 
         self.kanaly=[0,0,0]
 
 #----------------------------------------->
 
 #<----wykres tryb 2----------------------
-        self.wykres_4 = wykres.Wykres_dynamiczny_2(self.widget_20probek, width=9, height=9, dpi=75)
+     #   self.wykres_4 = wykres.Wykres_dynamiczny_1(self.widget_20probek, width=9, height=9, dpi=75)
 #----------------------------------------->
 
 #<---plik--------
@@ -919,14 +937,13 @@ class Ui_MainWindow(object):
 #----------->
 
 #<---zmienne---
+        self.p1=0
+        self.p2=0
         self.moc=0
         self.czestotliwosc=4
         self.data_pomiaru = time.strftime("%m_%d_%Y_", time.localtime())
         self.plik_wyjsciowy="test"
-        self.x1_raw=0
-        self.x2_raw=0
-        self.x3_raw=0
-        self.x4_raw=0
+        self.dane_raw=np.zeros([4,2])
         self.arduino=grzalka.Grzanie()
         self.miernik=miernik20.Aparature()
         self.miernik.ustaw_r       
@@ -1145,6 +1162,13 @@ class Ui_MainWindow(object):
             self.pomiar_start=0
             self.pushButton_start.setText("Start")
             self.timer_out.stop()
+    def rysuj(self):
+        self.wykres_1.dane=np.append(self.wykres_1.dane,[[ self.dane_raw[3,0],self.dane_raw[3,1] ]],axis=0)
+        self.wykres_2.dane=np.append(self.wykres_2.dane,[[ self.dane_raw[1,0],self.dane_raw[1,1] ]],axis=0)
+        self.wykres_3.dane=np.append(self.wykres_3.dane,[[ self.dane_raw[2,0],self.dane_raw[2,1] ]],axis=0)
+        self.wykres_1.update_figure()
+        self.wykres_2.update_figure()
+        self.wykres_3.update_figure()
 
     def zmiana_moc(self,w):
         self.moc=w
@@ -1181,36 +1205,41 @@ class Ui_MainWindow(object):
             writer.writerow( [t, T, p1, p2])
 
     def pomiar(self):
+        print("start")
         self.timer_out = QtCore.QTimer()
         self.pomiar_in_a()
         self.timer_out.timeout.connect(self.pomiar_in_a)
         self.timer_out.start(1000*self.czestotliwosc)
 
+
     def pomiar_in_a(self):
+        print("#########")
         self.p1=0
         self.p2=0
         self.timer_in = QtCore.QTimer()
         self.pomiar_in_b()
         self.timer_in.timeout.connect(self.pomiar_in_b)
+        # self.timer_in.timeout.connect(self.rysuj)
         self.timer_in.start(200)
 
     def pomiar_in_b(self):
+        print("---")
         if(self.p1<4):
             if(self.p2==0):
                 self.miernik.zamknij(self.kanaly[self.p1%3])
                 print(time.time()-self.czas_0)
                 self.p2=1
             else:
-                self.x1_raw=self.miernik.mierz()
-                print(time.time()-self.czas_0)
-                print( "odzczyt nr " +str(self.p1+1) + " wynosi: "+str(self.x1_raw) )                 
+                self.dane_raw[self.p1,0]=time.time()-self.czas_0
+                self.dane_raw[self.p1,1]=self.miernik.mierz()
+                print( "odzczyt nr " +str(self.p1+1))                 
+                print(self.dane_raw[self.p1,1])
                 self.p1+=1
                 self.p2=0
         else:
+            self.rysuj()
             self.timer_in.stop()
-
 #-------------------------------------->
-
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

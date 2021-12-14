@@ -4,13 +4,13 @@ float pomoc;
 
 const int grzalka=D1;
 
-int led_1=D2;
-int led_2=D3;
-int led_3=D4;
+int led_1=D8;
+int led_2=D7;
+int led_3=D6;
 int led_4=D5;
-int led_5=D6;
+int led_5=D0;
 
-int kom_pot=D6;
+int kom_pot=D3;
 int potencjometr=A0;
 
 void setup() {
@@ -25,7 +25,7 @@ void setup() {
   pinMode(led_5, OUTPUT);
   pinMode(kom_pot, INPUT);
     
-  Serial.begin(115200);
+  Serial.begin(9600);
 }
 
 void loop() {

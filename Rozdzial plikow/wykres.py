@@ -36,15 +36,17 @@ class Wykres_temp(Figura_wykresu):
 class Wykres_probka(Figura_wykresu):
     def __init__(self, *args, **kwargs):
         Figura_wykresu.__init__(self, *args, **kwargs)
+
+    def compute_initial_figure(self):
         self.dane=[[NaN,NaN,NaN]]
-        # self.
+        self.axes.plot([],[], 'b')
 
     def update_figure(self):
         self.axes.cla()
         self.axes.plot(self.dane[:,0], self.dane[:,1], 'b')
         self.draw()
 
-class Wykres_probka(Figura_wykresu):
+class Wykres_20kanal(Figura_wykresu):
     def __init__(self, *args, **kwargs):
         Figura_wykresu.__init__(self, *args, **kwargs)
 

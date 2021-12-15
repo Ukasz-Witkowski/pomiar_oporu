@@ -5,11 +5,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import matplotlib
 matplotlib.use('Qt5Agg')        # używamy QT5
 import wykres
-import grzalka
-import miernik20 
-import csv
-import time
-import numpy as np
+
 #----------------------->
 
 class Ui_MainWindow(object):
@@ -833,7 +829,6 @@ class Ui_MainWindow(object):
         self.pushButton_start2.setFont(font)
         self.pushButton_start2.setObjectName("pushButton_start2")
 #-------------->
-
         self.stackedWidget.addWidget(self.page_reczny)
 #<----zmiana trybu
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
@@ -923,56 +918,11 @@ class Ui_MainWindow(object):
         self.wykres_3 = wykres.Wykres_probka(self.widget_probka2, dpi=90)
         self.wykres_3.setObjectName("wykres_3")
         self.gridLayout_2.addWidget(self.wykres_3, 0, 0, 1, 1)
-
-        self.kanaly=[0,0,0]
-
 #----------------------------------------->
-
-#<----wykres tryb 2----------------------
-     #   self.wykres_4 = wykres.Wykres_dynamiczny_1(self.widget_20probek, width=9, height=9, dpi=75)
-#----------------------------------------->
-
-#<---plik--------
-        self.pilk_wyjsciowy="test.cvs"
-#----------->
-
-#<---zmienne---
-        self.p1=0
-        self.p2=0
-        self.moc=0
-        self.czestotliwosc=4
-        self.data_pomiaru = time.strftime("%d_%m_%Y_", time.localtime())
-        self.plik_wyjsciowy="test"
-        self.dane_raw=np.zeros([4,2])
-        self.arduino=grzalka.Grzanie()
-        self.miernik=miernik20.Aparature()
-        self.miernik.ustaw_r       
-        self.pomiar_start=0
-        self.czas_0=0
-#---->
-
-#<---połączenia-----
-        self.comboBox_kanaly0.activated['int'].connect(self.zmiana_kanal0)
-        self.comboBox_kanaly1.activated['int'].connect(self.zmiana_kanal1)
-        self.comboBox_kanaly2.activated['int'].connect(self.zmiana_kanal2)
-
-        # self.comboBox_osx1.activated['int'].connect(self.label_osx1.setNum)
-        # self.comboBox_osx2.activated['int'].connect(self.label_osx2.setNum)
-        # self.skala_temp.stateChanged['int'].connect(self.label_test_czekboxa.setNum)
-        self.doubleSpinBox_czestotliowsc.valueChanged['double'].connect(self.zmiana_czestotliwosc)
-
-        self.nazwa_pliku.textChanged['QString'].connect(self.zmiana_nazwa)
-
-        self.horizontalSlider.valueChanged['int'].connect(self.zmiana_moc)
-        self.horizontalSlider.sliderReleased.connect(self.moc_do_arduino)
-
-        self.comboBox.activated['int'].connect(self.stackedWidget.setCurrentIndex)
-#----->
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -1134,112 +1084,16 @@ class Ui_MainWindow(object):
         self.label_czestotliwosc_2.setText(_translate("MainWindow", "Okres między kanałami [s]"))
         self.label_czestotliwosc_3.setText(_translate("MainWindow", "Okres między seriami [s]"))
         self.pushButton_start2.setText(_translate("MainWindow", "Start"))
-    #----------->
         self.comboBox.setItemText(0, _translate("MainWindow", "Pomiar oporu w funkcji temeperatury"))
         self.comboBox.setItemText(1, _translate("MainWindow", "Ręczny"))
         self.label_tryb_opor.setText(_translate("MainWindow", "Tryb: "))
         self.label_tytul2.setText(_translate("MainWindow", "Nazwa_pomiaru"))
         self.label_wprowadz_nazwe.setText(_translate("MainWindow", "Nazwa pliku wyjściowego:"))
-        self.label_przedrostek.setText(_translate("MainWindow", self.data_pomiaru))
+        self.label_przedrostek.setText(_translate("MainWindow", "data_"))
         self.menuUstawienia.setTitle(_translate("MainWindow", "Ustawienia"))
         self.menuPmoc.setTitle(_translate("MainWindow", "Pomoc"))
-#<-------------------------
-        self.pushButton_start.clicked.connect(self.start_stop)
-        self.pushButton_start.clicked.connect(self.poczatek)
-#------------------------->
+    #--------->
 
-#<---funkcje--------------------
-
-    def poczatek(self):
-        self.czas_0=time.time()
-
-    def start_stop(self):
-        if( self.pomiar_start == 0):
-            self.pomiar_start=1
-            self.pushButton_start.setText("Stop")
-            self.pomiar()
-        else:
-            self.pomiar_start=0
-            self.pushButton_start.setText("Start")
-            self.timer_out.stop()
-    def rysuj(self):
-        self.wykres_1.dane=np.append(self.wykres_1.dane,[[ self.dane_raw[3,0],self.dane_raw[3,1] ]],axis=0)
-        self.wykres_2.dane=np.append(self.wykres_2.dane,[[ self.dane_raw[1,0],self.dane_raw[1,1] ]],axis=0)
-        self.wykres_3.dane=np.append(self.wykres_3.dane,[[ self.dane_raw[2,0],self.dane_raw[2,1] ]],axis=0)
-        self.wykres_1.update_figure()
-        self.wykres_2.update_figure()
-        self.wykres_3.update_figure()
-
-    def zmiana_moc(self,w):
-        self.moc=w
-        self.label_aktualna_moc_wartosc.setText(str(self.moc))
-
-    def zmiana_czestotliwosc(self,f):
-        self.czestotliwosc=f
-    
-    def zmiana_nazwa(self,n):
-        self.plik_wyjsciowy=self.data_pomiaru+n
-        self.label_tytul2.setText(n)
-
-    def moc_do_arduino(self):
-        self.arduino.zmien_moc(self.moc)
-
-    def zmiana_kanal0(self,ch):
-        self.kanaly[0]=ch+1
-        print("Ustawiono kanal pierwszej probki na: "+str(self.kanaly[0]))
-
-    def zmiana_kanal1(self,ch):
-        self.kanaly[1]=ch+1  
-        print("Ustawiono kanal drugiej probki na: "+str(self.kanaly[1]))
-    def zmiana_kanal2(self,ch):
-        self.kanaly[2]=ch+1    
-        print("Ustawiono kanal temperatury probki na: "+ str(self.kanaly[2]))
-
-    def aktualizuj(self):
-        y=self.miernik.mierz()
-        self.wykres_1.update_figure(y)
-
-    def zapis_prztworzone(self,t,T,p1,p2):
-        with open(self.pilk_wyjsciowy,"a") as f:
-            writer = csv.writer(f, delimiter=",")
-            writer.writerow( [t, T, p1, p2])
-
-    def pomiar(self):
-        print("start")
-        self.timer_out = QtCore.QTimer()
-        self.pomiar_in_a()
-        self.timer_out.timeout.connect(self.pomiar_in_a)
-        self.timer_out.start(1000*self.czestotliwosc)
-
-
-    def pomiar_in_a(self):
-        print("#########")
-        self.p1=0
-        self.p2=0
-        self.timer_in = QtCore.QTimer()
-        self.pomiar_in_b()
-        self.timer_in.timeout.connect(self.pomiar_in_b)
-        # self.timer_in.timeout.connect(self.rysuj)
-        self.timer_in.start(200)
-
-    def pomiar_in_b(self):
-        print("---")
-        if(self.p1<4):
-            if(self.p2==0):
-                self.miernik.zamknij(self.kanaly[self.p1%3])
-                print(time.time()-self.czas_0)
-                self.p2=1
-            else:
-                self.dane_raw[self.p1,0]=time.time()-self.czas_0
-                self.dane_raw[self.p1,1]=self.miernik.mierz()
-                print( "odzczyt nr " +str(self.p1+1))                 
-                print(self.dane_raw[self.p1,1])
-                self.p1+=1
-                self.p2=0
-        else:
-            self.rysuj()
-            self.timer_in.stop()
-#-------------------------------------->
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)

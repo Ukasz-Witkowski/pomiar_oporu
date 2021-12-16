@@ -22,8 +22,14 @@ class program():
         self.reset()
 
         self.arduino=grzalka.Grzanie()
+        if(self.arduino.error==1):
+            self.UI.horizontalSlider.setEnabled(False)
+
         self.miernik=miernik20.Aparature()
-        self.miernik.ustaw_r
+        if(self.miernik.error==1):
+            self.UI.pushButton_start.setEnabled(False)
+            self.UI.pushButton_start2.setEnabled(False)
+
 
         self.UI.label_przedrostek.setText(self.data_pomiaru)
 

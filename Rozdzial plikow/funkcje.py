@@ -7,7 +7,9 @@ import miernik20
 import csv
 import wykres
 import json
-
+from okno_ustawienia import Ui_Dialog as Form1
+from okno_pomoc import Ui_Dialog as Form2
+from PyQt5.QtWidgets import QMessageBox
 
 class program():
     def __init__(self):
@@ -23,13 +25,22 @@ class program():
 
         self.arduino=grzalka.Grzanie()
         if(self.arduino.error==1):
-            self.UI.horizontalSlider.setEnabled(False)
+            self.UI.horizontalSlider.setEnabled(False)  
+            self.timer_kom1 = QtCore.QTimer()
+            self.timer_kom1.timeout.connect(self.komunikat_grzalka)
+            self.timer_kom1.timeout.connect(self.timer_kom1.stop)
+            self.timer_kom1.start(1000)
+
 
         self.miernik=miernik20.Aparature()
         if(self.miernik.error==1):
             self.UI.pushButton_start.setEnabled(False)
             self.UI.pushButton_start2.setEnabled(False)
-
+   
+            self.timer_kom2 = QtCore.QTimer()
+            self.timer_kom2.timeout.connect(self.komunikat_miernik)
+            self.timer_kom2.timeout.connect(self.timer_kom2.stop)
+            self.timer_kom2.start(2000)
 
         self.UI.label_przedrostek.setText(self.data_pomiaru)
 
@@ -50,13 +61,14 @@ class program():
         self.UI.comboBox.activated['int'].connect(self.UI.stackedWidget.setCurrentIndex)
 
         self.UI.pushButton_start.clicked.connect(self.start_stop)
+        self.UI.menuUstawienia.triggered.connect(self.open_dialog_ust)
+        self.UI.menuPomoc.triggered.connect(self.open_dialog_pom)
 
         self.UI.pushButton_2.clicked.connect(self.reset)
 
     def start_stop(self):
         self.UI.comboBox.setEnabled(False)
         self.UI.nazwa_pliku.setEnabled(False)
-        self.zapis_prztworzone("Czas 1. [s]","Temperatura 1. [K]","Opór 1. [Ohm]","Czas 1. [s]","Temperatura 2. [K]","Opór 2. [Ohm]")
         self.licznik_start()
 
         if( self.pomiar_start == 0):
@@ -72,6 +84,7 @@ class program():
         
         if(self.uruchomiono==0):
             self.czas_0=time.time() 
+            self.zapis_prztworzone("Czas 1. [s]","Temperatura 1. [K]","Opór 1. [Ohm]","Czas 1. [s]","Temperatura 2. [K]","Opór 2. [Ohm]")
             self.uruchomiono=1
 
     def rysuj(self):
@@ -233,3 +246,32 @@ class program():
         else:
             self.rysuj()
             self.timer_in.stop()
+        
+    def open_dialog_ust(self):
+        dialog = QtWidgets.QDialog()
+        dialog.ui = Form1()
+        dialog.ui.setupUi(dialog)
+        dialog.exec_()
+        dialog.show()
+    
+    def open_dialog_pom(self):
+        dialog = QtWidgets.QDialog()
+        dialog.ui = Form2()
+        dialog.ui.setupUi(dialog)
+        dialog.exec_()
+        dialog.show()
+
+    def komunikat_grzalka(self):
+        msg =QMessageBox()
+        msg.setWindowTitle("Ostrzeżenie")
+        msg.setText("Zasilacz grzałki nie jest podłączony do komutera, czy chcesz kontynuować bez możliwoaści sterowania mocą grzałki?")
+        msg.setIcon(QMessageBox.Warning)
+        x=msg.exec_()
+
+    def komunikat_miernik(self):
+        msg =QMessageBox()
+        msg.setWindowTitle("Ostrzeżenie")
+        msg.setText("Miernik nie jest podłączony do komputera, wykonywanie pomiarów nie będzie możliwe.")
+        msg.setIcon(QMessageBox.Critical)
+        x=msg.exec_()
+

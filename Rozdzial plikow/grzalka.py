@@ -1,19 +1,18 @@
-import serial
-import find_com
+# import serial
+# import time``
+# import find_com
+# import math
 
 class Grzanie:
-
+    error=0
     def __init__(self):
-        self.error=0
-        # com = find_com.find_device('CH340')   #klon arduino
-        try:
-            com = find_com.find_device('Arduino')   #Arduino Leonarado
-            self.arduino = serial.Serial(com, baudrate=9600, timeout=1)
-        except:
-            print("nie ma grzałki")
-            self.error=1
-            
+        print("Polaczono z arduino")
+        # com = find_com.find_device('CH340')
+        # self.arduino = serial.Serial(com, baudrate=9600, timeout=1)
+
+
     def zmien_moc(self, moc):
-        data_to_arduino = str(moc)+'\n'
-        self.arduino.write(bytes(f"{data_to_arduino}", encoding='utf8'))
+        print("Zmieniono moc")
+        # data_to_arduino = str(moc)+'\n'
+        # self.arduino.write(bytes(f"{data_to_arduino}", encoding='utf8'))
 

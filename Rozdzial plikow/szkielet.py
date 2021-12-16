@@ -907,16 +907,16 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1200, 26))
         self.menubar.setObjectName("menubar")
-        self.menuUstawienia = QtWidgets.QMenu(self.menubar)
+        self.menuUstawienia = QtWidgets.QAction(self.menubar)
         self.menuUstawienia.setObjectName("menuUstawienia")
-        self.menuPmoc = QtWidgets.QMenu(self.menubar)
-        self.menuPmoc.setObjectName("menuPmoc")
+        self.menuPomoc = QtWidgets.QAction(self.menubar)
+        self.menuPomoc.setObjectName("menuPomoc")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.menuUstawienia.menuAction())
-        self.menubar.addAction(self.menuPmoc.menuAction())
+        self.menubar.addAction(self.menuUstawienia)
+        self.menubar.addAction(self.menuPomoc)
 #------->
 
         self.retranslateUi(MainWindow)
@@ -1097,8 +1097,8 @@ class Ui_MainWindow(object):
         self.label_tytul2.setText(_translate("MainWindow", "Nazwa_pomiaru"))
         self.label_wprowadz_nazwe.setText(_translate("MainWindow", "Nazwa pliku wyjściowego:"))
         self.label_przedrostek.setText(_translate("MainWindow", "data_"))
-        self.menuUstawienia.setTitle(_translate("MainWindow", "Ustawienia"))
-        self.menuPmoc.setTitle(_translate("MainWindow", "Pomoc"))
+        self.menuUstawienia.setText(_translate("MainWindow", "Ustawienia"))
+        self.menuPomoc.setText(_translate("MainWindow", "Pomoc"))
     #--------->
 
 if __name__ == "__main__":

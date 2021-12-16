@@ -17,19 +17,19 @@ class Ui_MainWindow(object):
         MainWindow.resize(520, 327)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-
         self.widget = QtWidgets.QWidget(self.centralwidget)
         self.widget.setGeometry(QtCore.QRect(60, 20, 201, 151))
         self.widget.setObjectName("widget")
-        
         self.gridLayout = QtWidgets.QGridLayout(self.widget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
-        
         self.dial = QtWidgets.QDial(self.widget)
         self.dial.setObjectName("dial")
         self.gridLayout.addWidget(self.dial, 0, 0, 1, 1)
-        
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(230, 180, 171, 16))
+        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label.setObjectName("label")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 520, 26))
@@ -45,6 +45,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label.setText(_translate("MainWindow", "TextLabel"))
 
 
 if __name__ == "__main__":

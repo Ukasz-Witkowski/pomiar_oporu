@@ -29,7 +29,6 @@ class Aparature:
     
 
     def mierz(self):
-        print("hej")
         if(self.k%5==0):
             pomiar=random.randint(0,10)/100
         if(self.k%5==1):

@@ -1,13 +1,3 @@
 {
-    "default_path": "siema",
-    "blog": {
-        "URL": "datacamp.com",
-        "name": "Datacamp"
-    },
-    "lista": [
-        1,
-        2,
-        3,
-        4
-    ]
+    "default_path": "C:/pomiary"
 }

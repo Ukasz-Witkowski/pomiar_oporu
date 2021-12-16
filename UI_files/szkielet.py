@@ -151,12 +151,16 @@ class Ui_MainWindow(object):
         self.comboBox_osx2.setObjectName("comboBox_osx2")
         self.comboBox_osx2.addItem("")
         self.comboBox_osx2.addItem("")
+###############
+
         self.pushButton_start = QtWidgets.QPushButton(self.page_pomiar_oporu)
         self.pushButton_start.setGeometry(QtCore.QRect(970, 240, 131, 61))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.pushButton_start.setFont(font)
         self.pushButton_start.setObjectName("pushButton_start")
+
+#####################
         self.comboBox_kanaly1_2 = QtWidgets.QComboBox(self.page_pomiar_oporu)
         self.comboBox_kanaly1_2.setGeometry(QtCore.QRect(380, 355, 71, 22))
         font = QtGui.QFont()

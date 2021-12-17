@@ -13,7 +13,7 @@ class Aparature:
     def set_r(self):
         self.wielkosc.write("CONF:RES")
 
-    def set_v(self,a):
+    def set_v(self):
         # self.wielkosc.write(f'ROUT:SCAN:FUNC {a},"VOLT:DC"')
         self.wielkosc.write("CONF:VOLT:DC")
 
@@ -37,25 +37,29 @@ class Aparature:
 
 aparature = Aparature()
 
-aparature.clo(19)
+time.sleep(0.5)
+aparature.wielkosc.write(f'ROUT:CLOS 9 ')
+time.sleep(0.5)
+aparature.wielkosc.write("CONF:FRES")
+time.sleep(0.5)
 
-# time.sleep(0.5)
+print(float(aparature.measure()))
 
 # aparature.set_r()
 
 time.sleep(1)
 
-aparature.set_v(1)
+# aparature.set_v()
 
-time.sleep(0.5)
+# time.sleep(0.5)
 
-while True:
-    for i in range(20):
-        aparature.clo(i+1)
-        time.sleep(0.5)
-        print(str(i+1)+". "+str(aparature.measure())) 
-        time.sleep(0.5)
-    print("--------------")
-    time.sleep(3)
+# while True:
+#     for i in range(20):
+#         aparature.clo(i+1)
+#         time.sleep(0.5)
+#         print(str(i+1)+". "+str(aparature.measure())) 
+#         time.sleep(0.5)
+#     print("--------------")
+#     time.sleep(3)
 
     

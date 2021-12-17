@@ -1,5 +1,9 @@
 {
     "sciezka_zapisu":  "C:\\Users\\Praca\\Desktop\\pomiary\\",
     "nazwa_pliku":"test.csv",
-    "zapis": true
+    "zapis": true,
+    "A" : 0.385,
+    "B" : 5.15,
+    "zakres_Pt100": 1000
+
 }

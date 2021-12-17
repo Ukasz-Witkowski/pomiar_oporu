@@ -23,14 +23,18 @@ class program():
 
         self.reset()
 
+        self.A=0.385
+        self.B=5.15
+
         self.arduino=grzalka.Grzanie()
+
+
         if(self.arduino.error==1):
             self.UI.horizontalSlider.setEnabled(False)  
             self.timer_kom1 = QtCore.QTimer()
             self.timer_kom1.timeout.connect(self.komunikat_grzalka)
             self.timer_kom1.timeout.connect(self.timer_kom1.stop)
             self.timer_kom1.start(1000)
-
 
         self.miernik=miernik20.Aparature()
         if(self.miernik.error==1):
@@ -48,11 +52,14 @@ class program():
         self.UI.comboBox_kanaly1.activated['int'].connect(self.zmiana_kanal1)
         self.UI.comboBox_kanaly2.activated['int'].connect(self.zmiana_kanal2)
         
+        self.UI.comboBox_zakres1.activated['int'].connect(self.zmiana_zakres_1)
+        self.UI.comboBox_zakres2.activated['int'].connect(self.zmiana_zakres_2)
+
         self.UI.comboBox_osx1.activated['int'].connect(self.wykres_1.zmien_osx)
         self.UI.comboBox_osx2.activated['int'].connect(self.wykres_2.zmien_osx)
 
         self.UI.doubleSpinBox_czestotliowsc.valueChanged['double'].connect(self.zmiana_czestotliwosc)
-
+        
         self.UI.nazwa_pliku.textChanged['QString'].connect(self.zmiana_nazwa)
 
         self.UI.horizontalSlider.valueChanged['int'].connect(self.zmiana_moc)
@@ -62,7 +69,9 @@ class program():
 
         self.UI.pushButton_start.clicked.connect(self.start_stop)
         self.UI.menuUstawienia.triggered.connect(self.open_dialog_ust)
+
         self.UI.menuPomoc.triggered.connect(self.open_dialog_pom)
+        self.UI.menuPomoc.triggered.connect(self.miernik.ustaw_r)
 
         self.UI.pushButton_2.clicked.connect(self.reset)
 
@@ -84,7 +93,8 @@ class program():
         
         if(self.uruchomiono==0):
             self.czas_0=time.time() 
-            self.zapis_prztworzone("Czas 1. [s]","Temperatura 1. [K]","Opór 1. [Ohm]","Czas 1. [s]","Temperatura 2. [K]","Opór 2. [Ohm]")
+            # self.zapis_surowe()
+            self.zapis_prztworzone("Czas 1. [s]","Temperatura 1. [K]","Opór 1. [Ohm]","Czas 2. [s]","Temperatura 2. [K]","Opór 2. [Ohm]")
             self.uruchomiono=1
 
     def rysuj(self):
@@ -121,16 +131,23 @@ class program():
         self.p1=0
         self.p2=0
 
-        self.czestotliwosc=3
+        self.czestotliwosc=5
         self.obecna_temperatura=0
         self.poprzednia_temperatura=0
         self.tempo_przyrostu=0
+
+        self.zakres_0=1000
+        self.zakres_1=1000000
+        self.zakres_2=100000000
+
 
         f = open('konfiguracja.json')
         data = json.load(f)
         self.plik_wyjsciowy= data['nazwa_pliku']
         self.sciezka=data['sciezka_zapisu']
         self.zapis_on=data['zapis']
+        self.zakres_0=data['zakres_Pt100']
+
         f.close()
 
         self.data_pomiaru = time.strftime("%d_%m_%Y_", time.localtime())
@@ -150,18 +167,21 @@ class program():
 
         self.UI.comboBox.setEnabled(True)
         self.UI.nazwa_pliku.setEnabled(True)
+        self.UI.doubleSpinBox_sledzenie.setEnabled(False)
 
         self.UI.label_srednie_tempo.setText("0")
         self.UI.label_aktualna_temp_wartosc.setText("0")
         self.UI.comboBox_kanaly0.setCurrentIndex(0)
         self.UI.comboBox_kanaly1.setCurrentIndex(1)
         self.UI.comboBox_kanaly2.setCurrentIndex(2)
+        self.UI.comboBox_zakres1.setCurrentIndex(6)
+        self.UI.comboBox_zakres2.setCurrentIndex(8)
+        
 
         self.UI.nazwa_pliku.setText("")
         self.UI.label_tytul2.setText("Nazwa_pomiaru")
 
     def licznik_start(self):
-        print("hej1")
         self.timer_licznik = QtCore.QTimer()
         if(self.pomiar_start==0):
             self.timer_licznik.timeout.connect(self.licznik_odswierz)
@@ -178,17 +198,23 @@ class program():
             s2="0"+str(s1)
         else:
             s2=str(s1)
-        print("hej2")
         self.UI.label_licznik.setText(m2+":"+s2)
         
-
-
     def zmiana_moc(self,w):
         self.moc=w
         self.UI.label_aktualna_moc_wartosc.setText(str(self.moc))
 
     def zmiana_czestotliwosc(self,f):
         self.czestotliwosc=f
+    
+    def zmiana_zakres_0(self,f):
+        self.zakres_0=f
+
+    def zmiana_zakres_1(self,f):
+        self.zakres_1=10**f
+
+    def zmiana_zakres_2(self,f):
+        self.zakres_2=10**f
 
     def moc_do_arduino(self):
         self.arduino.zmien_moc(self.moc)
@@ -204,11 +230,9 @@ class program():
 
     def zmiana_nazwa(self,n):
         self.plik_wyjsciowy=self.data_pomiaru+n
-        print(self.plik_wyjsciowy)
         self.UI.label_tytul2.setText(n)
 
     def zapis_prztworzone(self,t1,T1,R1,t2,T2,R2):
-        print(self.plik_wyjsciowy)
         with open(self.sciezka+self.plik_wyjsciowy+"_przetworzne.csv","a") as f:
             writer = csv.writer(f, delimiter='\t')
             writer.writerow( [t1,T1,R1,t2,T2,R2])
@@ -230,17 +254,26 @@ class program():
         self.timer_in = QtCore.QTimer()
         self.pomiar_in_b()
         self.timer_in.timeout.connect(self.pomiar_in_b)
-        self.timer_in.start(200)
+        self.timer_in.start(400)
 
     def pomiar_in_b(self):
         if(self.p1<4):
             if(self.p2==0):
                 self.miernik.zamknij(self.kanaly[self.p1%3])
-                print(time.time()-self.czas_0)
                 self.p2=1
             else:
-                self.dane_raw[self.p1,0]=time.time()-self.czas_0
-                self.dane_raw[self.p1,1]=self.miernik.mierz()
+                if(self.p1==0 or self.p1==3):
+                    self.dane_raw[self.p1,0]=time.time()-self.czas_0
+                    self.miernik.miernik.write(f"CONF:RES {self.zakres_0}")
+                    self.dane_raw[self.p1,1]=(float(self.miernik.mierz())-self.B)/self.A                    
+                elif(self.p1==1):
+                    self.dane_raw[self.p1,0]=time.time()-self.czas_0
+                    self.miernik.miernik.write(f"CONF:RES {self.zakres_1}")
+                    self.dane_raw[self.p1,1]=self.miernik.mierz()
+                else:
+                    self.dane_raw[self.p1,0]=time.time()-self.czas_0
+                    self.miernik.miernik.write(f"CONF:RES {self.zakres_2}")
+                    self.dane_raw[self.p1,1]=self.miernik.mierz()
                 self.p1+=1
                 self.p2=0
         else:

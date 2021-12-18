@@ -1,3 +1,4 @@
+from numpy import NaN
 import pyvisa
 
 class Aparature:
@@ -15,7 +16,10 @@ class Aparature:
 
     def ustaw_r(self):
         self.miernik.write("CONF:RES")
-        
+    
+    def ustaw_r4(self):
+        self.miernik.write("CONF:FRES")
+
     def ustaw_v(self):
         self.miernik.write("CONF:VOLT:DC")
 
@@ -26,7 +30,9 @@ class Aparature:
         self.miernik.write(f'ROUT:CLOS {ch}')
     
     def mierz(self):
-        pomiar = self.miernik.query("READ?") 
+        pomiar = self.miernik.query("READ?")
+        if(float(pomiar)>10**10):
+            pomiar=NaN 
         return pomiar
 
 

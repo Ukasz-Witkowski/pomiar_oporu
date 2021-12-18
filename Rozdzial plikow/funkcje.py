@@ -17,9 +17,12 @@ class program():
         self.okno = QtWidgets.QMainWindow()
         self.UI.setupUi(self.okno)
 
-        self.wykres_0 = wykres.Wykres_temp(self.UI.widget_temp,width=450/90,height=270/90, dpi=90)
-        self.wykres_1 = wykres.Wykres_probka(self.UI.widget_probka1,width=530/90,height=310/90, dpi=90)
-        self.wykres_2 = wykres.Wykres_probka(self.UI.widget_probka2,width=530/90,height=310/90, dpi=90)
+        self.P2_wykres_t = wykres.Wykres_temp(self.UI.P2_okno_wykresu_t,width=450/90,height=270/90, dpi=90)
+        self.P2_wykres_p1 = wykres.Wykres_probka(self.UI.P2_okno_wykresu_p1,width=530/90,height=310/90, dpi=90)
+        self.P2_wykres_p2 = wykres.Wykres_probka(self.UI.P2_okno_wykresu_p2,width=530/90,height=310/90, dpi=90)
+        self.R4_wykres_t = wykres.Wykres_temp(self.UI.R4_okno_wykresu_t,width=410/90,height=260/90, dpi=90)
+        self.R4_wykres_p2 = wykres.Wykres_probka(self.UI.R4_okno_wykresu_p,width=660/90,height=600/90, dpi=90)
+        self.CH20_wykres_p2 = wykres.Wykres_probka(self.UI.CH20_okno_wykresu,width=680/90,height=610/90, dpi=90)
 
         self.reset()
 
@@ -28,9 +31,8 @@ class program():
 
         self.arduino=grzalka.Grzanie()
 
-
         if(self.arduino.error==1):
-            self.UI.horizontalSlider.setEnabled(False)  
+            self.UI.P2_moc_suwak.setEnabled(False)  
             self.timer_kom1 = QtCore.QTimer()
             self.timer_kom1.timeout.connect(self.komunikat_grzalka)
             self.timer_kom1.timeout.connect(self.timer_kom1.stop)
@@ -38,57 +40,57 @@ class program():
 
         self.miernik=miernik20.Aparature()
         if(self.miernik.error==1):
-            self.UI.pushButton_start.setEnabled(False)
-            self.UI.pushButton_start2.setEnabled(False)
+            self.UI.P2_start.setEnabled(False)
+            self.UI.R4_start.setEnabled(False)
    
             self.timer_kom2 = QtCore.QTimer()
             self.timer_kom2.timeout.connect(self.komunikat_miernik)
             self.timer_kom2.timeout.connect(self.timer_kom2.stop)
             self.timer_kom2.start(2000)
 
-        self.UI.label_przedrostek.setText(self.data_pomiaru)
+        self.UI.nazwa_pliku_przedrostek.setText(self.data_pomiaru)
 
-        self.UI.comboBox_kanaly0.activated['int'].connect(self.zmiana_kanal0)
-        self.UI.comboBox_kanaly1.activated['int'].connect(self.zmiana_kanal1)
-        self.UI.comboBox_kanaly2.activated['int'].connect(self.zmiana_kanal2)
+        self.UI.P2_wybor_kanalow_t.activated['int'].connect(self.zmiana_kanal0)
+        self.UI.P2_wybor_kanalow_p1.activated['int'].connect(self.zmiana_kanal1)
+        self.UI.P2_wybor_kanalow_p2.activated['int'].connect(self.zmiana_kanal2)
         
-        self.UI.comboBox_zakres1.activated['int'].connect(self.zmiana_zakres_1)
-        self.UI.comboBox_zakres2.activated['int'].connect(self.zmiana_zakres_2)
+        self.UI.P2_zakres_p1.activated['int'].connect(self.zmiana_zakres_1)
+        self.UI.P2_zakres_p2.activated['int'].connect(self.zmiana_zakres_2)
 
-        self.UI.comboBox_osx1.activated['int'].connect(self.wykres_1.zmien_osx)
-        self.UI.comboBox_osx2.activated['int'].connect(self.wykres_2.zmien_osx)
+        self.UI.P2_wybor_osix_p1.activated['int'].connect(self.P2_wykres_p1.zmien_osx)
+        self.UI.P2_wybor_osix_p2.activated['int'].connect(self.P2_wykres_p2.zmien_osx)
 
-        self.UI.doubleSpinBox_czestotliowsc.valueChanged['double'].connect(self.zmiana_czestotliwosc)
+        self.UI.P2_czestotliowsc.valueChanged['double'].connect(self.zmiana_czestotliwosc)
         
         self.UI.nazwa_pliku.textChanged['QString'].connect(self.zmiana_nazwa)
 
-        self.UI.horizontalSlider.valueChanged['int'].connect(self.zmiana_moc)
-        self.UI.horizontalSlider.sliderReleased.connect(self.moc_do_arduino)
+        self.UI.P2_moc_suwak.valueChanged['int'].connect(self.zmiana_moc)
+        self.UI.P2_moc_suwak.sliderReleased.connect(self.moc_do_arduino)
 
-        self.UI.comboBox.activated['int'].connect(self.UI.stackedWidget.setCurrentIndex)
+        self.UI.zmiana_trybu.activated['int'].connect(self.UI.stackedWidget.setCurrentIndex)
 
-        self.UI.pushButton_start.clicked.connect(self.start_stop)
-        self.UI.menuUstawienia.triggered.connect(self.open_dialog_ust)
+        self.UI.P2_start.clicked.connect(self.start_stop)
+        self.UI.Ustawienia.triggered.connect(self.open_dialog_ust)
 
-        self.UI.menuPomoc.triggered.connect(self.open_dialog_pom)
-        self.UI.menuPomoc.triggered.connect(self.miernik.ustaw_r)
+        self.UI.Pomoc.triggered.connect(self.open_dialog_pom)
 
-        self.UI.pushButton_2.clicked.connect(self.reset)
+
+        self.UI.P2_reset.clicked.connect(self.reset)
 
     def start_stop(self):
-        self.UI.comboBox.setEnabled(False)
+        self.UI.zmiana_trybu.setEnabled(False)
         self.UI.nazwa_pliku.setEnabled(False)
         self.licznik_start()
 
         if( self.pomiar_start == 0):
             self.pomiar_start=1
-            self.UI.pushButton_start.setText("Stop")
-            self.UI.pushButton_2.setEnabled(False)
+            self.UI.P2_start.setText("Stop")
+            self.UI.P2_reset.setEnabled(False)
             self.pomiar()
         else:
             self.pomiar_start=0
-            self.UI.pushButton_start.setText("Start")
-            self.UI.pushButton_2.setEnabled(True)
+            self.UI.P2_start.setText("Start")
+            self.UI.P2_reset.setEnabled(True)
             self.timer_out.stop()
         
         if(self.uruchomiono==0):
@@ -102,18 +104,18 @@ class program():
         self.poprzednia_temperatura=self.obecna_temperatura
         self.obecna_temperatura=self.dane_raw[3,1]
         self.tempo_przyrostu=(self.obecna_temperatura-self.poprzednia_temperatura)/self.czestotliwosc*60
-        self.UI.label_aktualna_temp_wartosc.setText(str(round(self.obecna_temperatura,2)))
-        self.UI.label_srednie_tempo.setText(str(round(self.tempo_przyrostu,2)))
+        self.UI.P2_temperatura.setText(str(round(self.obecna_temperatura,2)))
+        self.UI.P2_tempo.setText(str(round(self.tempo_przyrostu,2)))
 
         self.zapis_prztworzone(self.dane_przetworzone[0,0],self.dane_przetworzone[0,1],self.dane_przetworzone[0,2],self.dane_przetworzone[1,0],self.dane_przetworzone[1,1],self.dane_przetworzone[1,2])
         self.zapis_surowe(self.dane_raw[0,0],self.dane_raw[0,1],self.dane_raw[1,0],self.dane_raw[1,1],self.dane_raw[2,0],self.dane_raw[2,1],self.dane_raw[3,0],self.dane_raw[3,1])
         
-        self.wykres_0.dane=np.append(self.wykres_0.dane,[[ self.dane_raw[3,0],self.dane_raw[3,1]]],axis=0)
-        self.wykres_1.dane=np.append(self.wykres_1.dane,[self.dane_przetworzone[0]],axis=0)
-        self.wykres_2.dane=np.append(self.wykres_2.dane,[self.dane_przetworzone[1]],axis=0)
-        self.wykres_0.update_figure()
-        self.wykres_1.update_figure()
-        self.wykres_2.update_figure()
+        self.P2_wykres_t.dane=np.append(self.P2_wykres_t.dane,[[ self.dane_raw[3,0],self.dane_raw[3,1]]],axis=0)
+        self.P2_wykres_p1.dane=np.append(self.P2_wykres_p1.dane,[self.dane_przetworzone[0]],axis=0)
+        self.P2_wykres_p2.dane=np.append(self.P2_wykres_p2.dane,[self.dane_przetworzone[1]],axis=0)
+        self.P2_wykres_t.update_figure()
+        self.P2_wykres_p1.update_figure()
+        self.P2_wykres_p2.update_figure()
 
     def przetworz(self):
         a=(self.dane_raw[0,1]-self.dane_raw[3,1])/(self.dane_raw[0,0]-self.dane_raw[3,0])
@@ -159,27 +161,27 @@ class program():
         self.uruchomiono=0
         self.pomiar_start=0
         self.czas_0=0
-        self.UI.label_licznik.setText("00:00")
+        self.UI.P2_licznik.setText("00:00")
         
-        self.wykres_0.reset_wykres()
-        self.wykres_1.reset_wykres()
-        self.wykres_2.reset_wykres()
+        self.P2_wykres_t.reset_wykres()
+        self.P2_wykres_p1.reset_wykres()
+        self.P2_wykres_p2.reset_wykres()
 
-        self.UI.comboBox.setEnabled(True)
+        self.UI.zmiana_trybu.setEnabled(True)
         self.UI.nazwa_pliku.setEnabled(True)
-        self.UI.doubleSpinBox_sledzenie.setEnabled(False)
+        self.UI.P2_sledzenie_temp_wartosc.setEnabled(False)
 
-        self.UI.label_srednie_tempo.setText("0")
-        self.UI.label_aktualna_temp_wartosc.setText("0")
-        self.UI.comboBox_kanaly0.setCurrentIndex(0)
-        self.UI.comboBox_kanaly1.setCurrentIndex(1)
-        self.UI.comboBox_kanaly2.setCurrentIndex(2)
-        self.UI.comboBox_zakres1.setCurrentIndex(6)
-        self.UI.comboBox_zakres2.setCurrentIndex(8)
+        self.UI.P2_tempo.setText("0")
+        self.UI.P2_temperatura.setText("0")
+        self.UI.P2_wybor_kanalow_t.setCurrentIndex(0)
+        self.UI.P2_wybor_kanalow_p1.setCurrentIndex(1)
+        self.UI.P2_wybor_kanalow_p2.setCurrentIndex(2)
+        self.UI.P2_zakres_p1.setCurrentIndex(6)
+        self.UI.P2_zakres_p2.setCurrentIndex(8)
         
 
         self.UI.nazwa_pliku.setText("")
-        self.UI.label_tytul2.setText("Nazwa_pomiaru")
+        self.UI.naglowek.setText("Nazwa_pomiaru")
 
     def licznik_start(self):
         self.timer_licznik = QtCore.QTimer()
@@ -198,11 +200,11 @@ class program():
             s2="0"+str(s1)
         else:
             s2=str(s1)
-        self.UI.label_licznik.setText(m2+":"+s2)
+        self.UI.P2_licznik.setText(m2+":"+s2)
         
     def zmiana_moc(self,w):
         self.moc=w
-        self.UI.label_aktualna_moc_wartosc.setText(str(self.moc))
+        self.UI.P2_moc.setText(str(self.moc))
 
     def zmiana_czestotliwosc(self,f):
         self.czestotliwosc=f
@@ -230,7 +232,7 @@ class program():
 
     def zmiana_nazwa(self,n):
         self.plik_wyjsciowy=self.data_pomiaru+n
-        self.UI.label_tytul2.setText(n)
+        self.UI.naglowek.setText(n)
 
     def zapis_prztworzone(self,t1,T1,R1,t2,T2,R2):
         with open(self.sciezka+self.plik_wyjsciowy+"_przetworzne.csv","a") as f:

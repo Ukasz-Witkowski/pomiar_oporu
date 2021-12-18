@@ -3,7 +3,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 #<---------------------------
 import matplotlib
 matplotlib.use('Qt5Agg')        # używamy QT5
-import wykres
 
 #----------------------->
 
@@ -1484,6 +1483,7 @@ class Ui_MainWindow(object):
         self.R4_reset.setText(_translate("MainWindow", "Reset"))
         self.R4_licznik.setText(_translate("MainWindow", "00:00"))
     #--------------->
+
 
     #<----tryb reczny---    
         self.label_1.setText(_translate("MainWindow", "Kanał 1"))

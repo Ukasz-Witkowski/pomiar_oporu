@@ -13,6 +13,12 @@ class Aparature:
 
     def ustaw_v(self):
         print("Ustaiono pomiar V")
+        
+    def ustaw_r_zakres(self,r):
+        print("Ustawiono zakres r: ",r)
+    
+    def ustaw_r4_zakres(self,r):
+        print("Ustawiono zakres r4: ",r)
 
     def otworz(self):
         print("Otawrto kanaøy")
@@ -23,6 +29,7 @@ class Aparature:
     
 
     def mierz(self):
+        print("mierz")
         if(self.k%5==0):
             pomiar=random.randint(0,10)/100
         if(self.k%5==1):

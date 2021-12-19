@@ -20,6 +20,14 @@ class Aparature:
     def ustaw_r4(self):
         self.miernik.write("CONF:FRES")
 
+
+    def ustaw_r_zakres(self,r):
+        self.miernik.write(f"CONF:RES {r}")
+        
+    def ustaw_r4_zakres(self,r):
+        self.miernik.write(f"CONF:FRES {r}")
+        
+
     def ustaw_v(self):
         self.miernik.write("CONF:VOLT:DC")
 
@@ -31,6 +39,7 @@ class Aparature:
     
     def mierz(self):
         pomiar = self.miernik.query("READ?")
+        print(pomiar)
         if(float(pomiar)>10**10):
             pomiar=NaN 
         return pomiar
